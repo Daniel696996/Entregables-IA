@@ -1,0 +1,135 @@
+PRIMER PRONT
+quiero desarrollar la siguiente idea
+Crear una pagina web orientada a Hospitales que sea interactiva para pacientes y servicio medico, quiero que tengan un estilado muy alto
+de la siguiente manera
+En el menu para medicos
+pueden ver medicamentos disponibles
+las herramientas disponibles generales que necesitan los medicos, jeringas, agujas, guantes etc y todos sus variados 
+perosnal disponible y que se vean las imagenes de los medicos una descripcion breve de especialista agrega filtros muy detallados y agrega sus variaciones que sea muy completo
+el estilo generalo pero que sea intuitiva e interactiva, y que de modelados 3d tde los insumos disponibles 
+que tengan categorias, tablero de pacientes, descripciones de citas, agenda y programaciones etc
+
+Para los pacientes
+Filtros para agendar citas, para reservas medicamentos, ver herramientas que necesiten los pacientes, muletas, sillas de ruedas, protesis, medicamentos, tambien apartado de perfil donde den una amplia descripcion de quienes son, sus enfermedades y antecedentes, que estan no sean modificadas por el usuario sino que sea un historial portable, que las radiografias puedan ser vistas en 3d, las enfermedades y tumores, fracturas etc
+
+Generame un promt muy especifico y amplio para desarrollar al detalle y que sea escalable
+
+
+RESPUESTA DE LA IA (GEMINI)
+Aquí tienes un **prompt maestro, sumamente detallado y profesional**, diseñado específicamente para alimentar a un modelo de IA avanzado o a un arquitecto de software. Está estructurado para exigir un nivel visual de gama alta (*high-end UI/UX*), capacidades de renderizado 3D (tanto para insumos como para imágenes médicas/radiografías) y una arquitectura modular y escalable para hospitales.
+
+Puedes copiar y pegar el siguiente texto directamente:
+
+```text
+Actúa como un Arquitecto de Software Full Stack Senior y un Diseñador UI/UX de Élite especializado en tecnología médica y aplicaciones hospitalarias de alta gama. 
+
+Necesito que diseñes y desarrolles la arquitectura completa y el código base funcional de una plataforma web hospitalaria bilingüe/avanzada llamada "MedNexus OS", orientada tanto a profesionales de la salud como a pacientes, con un estándar visual ultramoderno, limpio, sofisticado (estilo Apple Healthcare / Terminal Futurista Médico) y capacidades interactivas en 3D.
+
+### 🌟 Estándares de Diseño y UI/UX Obligatorios:
+- **Estética:** Modo oscuro futurista y limpio con acentos de color clínico (azul cian, verde esmeralda y gris pizarra), uso de efectos de vidrio sutiles (glassmorphism), transiciones fluidas, tipografías geométricas y tarjetas con sombras elegantes.
+- **Interactividad 3D:** Integración obligatoria de elementos 3D (simulados con Three.js / React Three Fiber o contenedores WebGL ligeros) tanto para los equipos médicos como para las visualizaciones clínicas de pacientes.
+- **Escalabilidad:** Código modular, estructurado en componentes reutilizables y preparado para conectar con bases de datos relacionales y APIs seguras en el futuro.
+
+---
+
+### 🏥 MÓDULO 1: PORTAL PARA MÉDICOS (Clinical Control & Inventory)
+El panel médico debe ser una estación de trabajo centralizada, rápida e intuitiva:
+
+1. **Gestión e Inventario de Insumos y Medicamentos:**
+   - Catálogo completo de medicamentos disponibles con filtros avanzados (por categoría, vía de administración, stock crítico).
+   - Catálogo de herramientas y suministros médicos generales (jeringas, agujas, guantes, bisturís, etc.) con sus respectivas variaciones (calibres, tamaños, materiales).
+   - **Visor 3D Interactivo de Insumos:** Al hacer clic en un equipo médico o herramienta compleja (ej. jeringa especializada, desfibrilador, prótesis quirúrgica), debe abrirse un visualizador 3D interactivo donde el médico pueda rotar, hacer zoom y ver componentes del insumo.
+2. **Directorio y Gestión de Personal Médico:**
+   - Vista de especialistas disponibles con fotografías de perfil profesionales, descripciones detalladas de su especialidad, áreas de experiencia y estado en tiempo real (Disponible, En Cirugía, En Consulta).
+   - Filtros avanzados de personal por especialidad, turno, departamento y disponibilidad horaria.
+3. **Tablero de Pacientes y Agenda (Dashboard):**
+   - Vista general de citas del día con descripciones detalladas del motivo de consulta.
+   - Tablero estilo Kanban o tabla interactiva de pacientes asignados, con estados clínicos rápidos.
+   - Calendario y programaciones de quirófanos y consultorios.
+
+---
+
+### 🧑‍⚕️ MÓDULO 2: PORTAL PARA PACIENTES (Patient Care & Clinical History)
+El portal del paciente debe ser sumamente amigable, empático y claro:
+
+1. **Agendamiento y Reservas:**
+   - Sistema de filtros inteligentes para agendar citas médicas seleccionando especialidad, doctor, fecha y modalidad.
+   - Apartado para reservar medicamentos recetados y solicitar equipos de apoyo médico a domicilio o clínica (muletas, sillas de ruedas, prótesis, órtesis) con especificaciones de tallas y modelos.
+2. **Perfil Clínico e Historial Portable:**
+   - Perfil de identidad del paciente con descripción demográfica detallada, grupo sanguíneo, alergias y antecedentes médicos crónicos.
+   - **Restricción de Seguridad:** Los antecedentes y diagnósticos NO pueden ser modificados por el usuario/paciente; están diseñados como un "Historial Clínico Portable e Inmutable" firmado digitalmente por la institución.
+3. **Visualizador 3D de Diagnósticos e Imágenes Médicas:**
+   - Un módulo innovador donde el paciente puede visualizar en 3D interactivo sus propias radiografías volumétricas, modelos tridimensionales de fracturas óseas, ubicación de tumores o patologías específicas, permitiendo rotar la lesión y ver anotaciones médicas superpuestas.
+
+---
+
+### ⚙️ REQUISITOS TÉCNICOS DE IMPLEMENTACIÓN:
+- Proporciona la estructura del proyecto y los componentes principales implementados en un stack moderno (ej. React / Next.js con Tailwind CSS y bibliotecas de renderizado 3D para la web).
+- Incluye la lógica de simulación de datos (mock data robusto) para que la interfaz funcione de inmediato sin necesidad de una base de datos externa en la primera fase de prueba.
+- Comenta el código detalladamente explicando la lógica de los filtros avanzados y la integración de los contenedores 3D.
+
+```
+
+---
+
+### 💡 ¿Qué puedes hacer con este prompt?
+
+1. **Cópialo completo** tal como está.
+2. Pégalo en tu asistente de desarrollo o modelo de IA preferido.
+3. La IA te devolverá una estructura de código lista para escalar, dividida lógicamente para cumplir con todas las altas expectativas visuales y técnicas que buscas.
+
+
+
+
+
+
+SEGUNDO PRONT
+Actúa como un Arquitecto de Software Full Stack Senior y un Diseñador UI/UX de Élite especializado en tecnología médica y aplicaciones hospitalarias de alta gama. 
+
+Necesito que diseñes y desarrolles la arquitectura completa y el código base funcional de una plataforma web hospitalaria bilingüe/avanzada llamada "MedNexus OS", orientada tanto a profesionales de la salud como a pacientes, con un estándar visual ultramoderno, limpio, sofisticado (estilo Apple Healthcare / Terminal Futurista Médico) y capacidades interactivas en 3D.
+🌟 Estándares de Diseño y UI/UX Obligatorios:
+- Estética: Modo oscuro futurista y limpio con acentos de color clínico (azul cian, verde esmeralda y gris pizarra), uso de efectos de vidrio sutiles (glassmorphism), transiciones fluidas, tipografías geométricas y tarjetas con sombras elegantes.
+- Interactividad 3D: Integración obligatoria de elementos 3D (simulados con Three.js / React Three Fiber o contenedores WebGL ligeros) tanto para los equipos médicos como para las visualizaciones clínicas de pacientes.
+- Escalabilidad: Código modular, estructurado en componentes reutilizables y preparado para conectar con bases de datos relacionales y APIs seguras en el futuro.
+🏥 MÓDULO 1: PORTAL PARA MÉDICOS (Clinical Control & Inventory)
+El panel médico debe ser una estación de trabajo centralizada, rápida e intuitiva:
+1. Gestión e Inventario de Insumos y Medicamentos:
+   - Catálogo completo de medicamentos disponibles con filtros avanzados (por categoría, vía de administración, stock crítico).
+   - Catálogo de herramientas y suministros médicos generales (jeringas, agujas, guantes, bisturís, etc.) con sus respectivas variaciones (calibres, tamaños, materiales).
+   - Visor 3D Interactivo de Insumos: Al hacer clic en un equipo médico o herramienta compleja (ej. jeringa especializada, desfibrilador, prótesis quirúrgica), debe abrirse un visualizador 3D interactivo donde el médico pueda rotar, hacer zoom y ver componentes del insumo.
+2. Directorio y Gestión de Personal Médico:
+   - Vista de especialistas disponibles con fotografías de perfil profesionales, descripciones detalladas de su especialidad, áreas de experiencia y estado en tiempo real (Disponible, En Cirugía, En Consulta).
+   - Filtros avanzados de personal por especialidad, turno, departamento y disponibilidad horaria.
+3. Tablero de Pacientes y Agenda (Dashboard):
+   - Vista general de citas del día con descripciones detalladas del motivo de consulta.
+   - Tablero estilo Kanban o tabla interactiva de pacientes asignados, con estados clínicos rápidos.
+   - Calendario y programaciones de quirófanos y consultorios.
+🧑‍⚕️ MÓDULO 2: PORTAL PARA PACIENTES (Patient Care & Clinical History)
+El portal del paciente debe ser sumamente amigable, empático y claro:
+1. Agendamiento y Reservas:
+   - Sistema de filtros inteligentes para agendar citas médicas seleccionando especialidad, doctor, fecha y modalidad.
+   - Apartado para reservar medicamentos recetados y solicitar equipos de apoyo médico a domicilio o clínica (muletas, sillas de ruedas, prótesis, órtesis) con especificaciones de tallas y modelos.
+2. Perfil Clínico e Historial Portable:
+   - Perfil de identidad del paciente con descripción demográfica detallada, grupo sanguíneo, alergias y antecedentes médicos crónicos.
+   - Restricción de Seguridad: Los antecedentes y diagnósticos NO pueden ser modificados por el usuario/paciente; están diseñados como un "Historial Clínico Portable e Inmutable" firmado digitalmente por la institución.
+3. Visualizador 3D de Diagnósticos e Imágenes Médicas:
+   - Un módulo innovador donde el paciente puede visualizar en 3D interactivo sus propias radiografías volumétricas, modelos tridimensionales de fracturas óseas, ubicación de tumores o patologías específicas, permitiendo rotar la lesión y ver anotaciones médicas superpuestas.
+⚙️ REQUISITOS TÉCNICOS DE IMPLEMENTACIÓN:
+- Proporciona la estructura del proyecto y los componentes principales implementados en un stack moderno (ej. React / Next.js con Tailwind CSS y bibliotecas de renderizado 3D para la web).
+- Incluye la lógica de simulación de datos (mock data robusto) para que la interfaz funcione de inmediato sin necesidad de una base de datos externa en la primera fase de prueba.
+- Comenta el código detalladamente explicando la lógica de los filtros avanzados y la integración de los contenedores 3D.
+hazmes preguntas sobre las tecnologias que requiera la web y ambitos fundamentales necesarios que no he especificado para desarrollarla, como lo que no debe de hacer 
+
+Desarrollala en una carpeta aparte y crea una guia txt y md para saber como funciona la web
+
+
+
+
+RESPUESTA DE LA IA (CHATGPT)
+Creé **MedNexus OS** en una carpeta independiente: [MedNexus-OS](/home/ghost/Documentos/riwi/MedNexus-OS).
+
+Incluye portal clínico y de pacientes en español e inglés; filtros combinables para inventario, pacientes y personal; agenda; reservas ficticias; historial de solo lectura; y modelos 3D interactivos para equipos y anatomía. Los ejemplos son ficticios y tienen contexto de Medellín y Antioquia. La ayuda de emergencia recomienda acudir al hospital más cercano; la llamada usa el número inválido **+57 000 000 0000** y no marca ni contacta servicios reales.
+
+Configuré Next.js, TypeScript, Tailwind y React Three Fiber según sus guías oficiales de instalación. [Next.js](https://nextjs.org/docs/app/getting-started/installation), [React Three Fiber](https://r3f.docs.pmnd.rs/getting-started/installation) y [Tailwind CSS](https://tailwindcss.com/docs/installation/framework-guides/nextjs).
+
+Guías: [GUIA.md](/home/ghost/Documentos/riwi/MedNexus-OS/GUIA.md) y [GUIA.txt](/home/ghost/Documentos/riwi/MedNexus-OS/GUIA.txt). Para iniciar, ejecuta `npm install` y luego `npm run dev` desde esa carpeta. **No instalé dependencias ni ejecuté la compilación**, así que queda pendiente comprobar el arranque local.

@@ -1,0 +1,86 @@
+MEDNEXUS OS - GUIA RAPIDA
+=========================
+
+QUE ES
+------
+Demo web bilingue para una plataforma hospitalaria. Incluye espacio clinico,
+portal del paciente, agenda, inventario, equipo medico, historial de solo
+lectura, orientacion de seguridad y modelos 3D ficticios.
+
+INICIAR
+-------
+Necesitas Node.js 20.9 o posterior y npm.
+
+1. Abre una terminal en la carpeta MedNexus-OS.
+2. Ejecuta:
+
+   npm install
+   npm run dev
+
+3. Abre http://localhost:3000 en el navegador.
+
+Para compilar y servir:
+
+   npm run build
+   npm start
+
+CAMBIAR IDIOMA Y ROL
+--------------------
+Usa el boton ES / EN en la barra superior para cambiar el idioma.
+Usa Clinico / Paciente en la barra lateral para cambiar de espacio.
+Esto solo cambia la vista local; no es autenticacion ni control de acceso.
+
+FUNCIONES
+---------
+Clinico:
+- Resumen de citas, pacientes asignados, inventario y disponibilidad.
+- Pacientes: busca por nombre, codigo, ciudad o especialidad; filtra por estado.
+- Inventario: filtra por categoria, via/especificacion, texto y stock critico.
+- Equipo medico: filtra por especialidad, turno y disponibilidad.
+- Agenda: consulta citas, consultorios y quirofanos ficticios.
+- Abre un producto para rotar y acercar el modelo 3D.
+
+Paciente:
+- Consulta resumen de salud y proxima cita simulada.
+- Busca especialidad, profesional, fecha y modalidad para reservar.
+- La reserva solo muestra una confirmacion local.
+- Consulta el historial firmado de solo lectura y abre el hueso ilustrativo 3D.
+- Abre Ayuda segura para leer el mensaje de emergencia y probar la llamada demo.
+
+VISOR 3D
+--------
+Arrastra el objeto con el mouse o el dedo para rotarlo. Usa la rueda o el gesto
+de acercamiento para hacer zoom. Los modelos se generan en el navegador usando
+Three.js y React Three Fiber. No se cargan radiografias ni imagenes de pacientes.
+
+La escena del hueso y la zona resaltada son ilustrativas y no diagnostican.
+
+DATOS Y SEGURIDAD
+-----------------
+Todos los nombres, codigos, antecedentes, alergias, profesionales, existencias,
+citas, firmas y estados son ficticios. Los ejemplos usan contexto de Medellin
+y Antioquia, Colombia. No introduzcas datos reales.
+
+La app no diagnostica ni recomienda tratamientos o dosis. Ante una urgencia,
+acude al centro hospitalario mas cercano. En una emergencia real, contacta los
+servicios locales y solicita una ambulancia desde un dispositivo real.
+
+El boton de llamada solo abre una animacion local. El numero +57 000 000 0000
+es invalido y no llama a ningun servicio. No se abre el marcador ni se transmite
+audio.
+
+La demo no se conecta a una EPS, IPS, hospital, base de datos o servicio de
+emergencias. No genera prescripciones ni reserva espacios reales.
+
+ARCHIVOS PRINCIPALES
+--------------------
+src/app/                  Rutas, layout y estilos
+src/components/           Interfaz y visor 3D
+src/data/mock-data.ts     Datos colombianos ficticios
+src/lib/                  Adaptador tipado de repositorio
+src/types/                Tipos de dominio
+README.md                 Inicio rapido y resumen
+GUIA.md                   Guia detallada de navegacion y arquitectura
+
+Antes de uso real hacen falta autenticacion, autorizacion, auditoria, backend,
+proteccion de datos, interoperabilidad y validacion de la institucion.
