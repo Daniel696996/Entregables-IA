@@ -133,3 +133,245 @@ Incluye portal clínico y de pacientes en español e inglés; filtros combinable
 Configuré Next.js, TypeScript, Tailwind y React Three Fiber según sus guías oficiales de instalación. [Next.js](https://nextjs.org/docs/app/getting-started/installation), [React Three Fiber](https://r3f.docs.pmnd.rs/getting-started/installation) y [Tailwind CSS](https://tailwindcss.com/docs/installation/framework-guides/nextjs).
 
 Guías: [GUIA.md](/home/ghost/Documentos/riwi/MedNexus-OS/GUIA.md) y [GUIA.txt](/home/ghost/Documentos/riwi/MedNexus-OS/GUIA.txt). Para iniciar, ejecuta `npm install` y luego `npm run dev` desde esa carpeta. **No instalé dependencias ni ejecuté la compilación**, así que queda pendiente comprobar el arranque local.
+
+
+PRONTS SIGUIENTES ACTUALIZACIONES
+
+Para cumplir con lo que necesitas, he adaptado completamente el enfoque: pasamos de la estética oscura/cyberpunk de ciberseguridad a una **interfaz de tipo hospitalario**, limpia, profesional, minimalista (para evitar la fatiga visual), con paleta de colores corporativos de salud (blancos, azules clínicos y verdes suaves) y agregando componentes avanzados de modelos interactivos y simulación de voz.
+
+A continuación, tienes el **nuevo prompt detallado** que puedes usar en tu generador de código, seguido de algunas ideas clave para complementar el proyecto.
+
+---
+
+### Prompt para generar la web (Estilo Hospitalario, Minimalista y con Interacción de Voz)
+
+```text
+Crea una aplicación web SPA (Single Page Application) moderna y limpia con diseño y colorimetría enfocados en el sector salud/hospitalario ("Hospital Management & Clinical Safety").
+
+Requisitos de Diseño e Interfaz (UI/UX Minimalista):
+- Paleta de Colores Limpia: Fondo blanco puro (#FFFFFF) y gris muy suave (#F8FAFC) para contenedores. Acentos en Azul Clínico Principal (#0284C7 / #0EA5E9), Verde Médico de estado seguro (#10B981) y toques sutiles de gris oscuro (#334155) para tipografía. Sin saturación ni efectos visuales recargados para evitar la fatiga visual.
+- Tipografía moderna, sans-serif, altamente legible (tipo Inter o Roboto).
+- Estructura y Componentes del Dashboard Hospitalario:
+  1. Barra Superior (Header): Logotipo minimalista de la plataforma, selector de entorno clínico/hospitalario activo, y un indicador visual del estado del sistema médico.
+  2. Vista Principal de Auditoría Médica: Tarjetas limpias tipo glassmorphism suave que muestran el estado de seguridad de los sistemas del hospital (Historias Clínicas Electrónicas, Red de Monitoreo de Pacientes, Servidores de Farmacia).
+  3. Módulo 3D Interactivo Mejorado: Un contenedor optimizado con controles suaves para visualizar la topología de la red hospitalaria o modelos de dispositivos médicos interconectados (con opción de rotar, hacer zoom y examinar nodos de forma fluida).
+  4. Módulo de Asistencia por Voz (Simulación de Llamada / IA): Un panel flotante o sección dedicada a "Asistente de Voz Clínico" con un botón grande de llamada, ondas de audio animadas cuando el usuario habla y simulación de interacción conversacional por voz en tiempo real para consultas de triage o reportes de fallos.
+  5. Panel de Recomendaciones Defensivas: Listado estructurado sin exceso de adornos, priorizando la lectura rápida de parches y normativas de seguridad en salud (como HIPAA o protocolos internos).
+
+Asegúrate de que la interfaz transmita calma, orden, alta profesionalidad médica y cero saturación visual.
+
+```
+
+---
+
+### Ideas complementarias para tu proyecto enfocadas en este giro
+
+1. **Enfoque de "Triage de Vulnerabilidades":**
+En lugar de ver los errores de código como simples alertas de hackers, adapta el lenguaje de tu plataforma al ámbito de la salud. Por ejemplo, en lugar de niveles de severidad genéricos, usa categorías tipo **"Triage Clínico"** (Crítico = Código Rojo / Urgencia Inmediata; Moderado = Sala de Observación). Esto le da coherencia total al estilado hospitalario.
+2. **Simulación de Voz Práctica:**
+Para implementar la interacción de voz sin volverse locos al principio, puedes integrar la API nativa del navegador de reconocimiento de voz (`Web Speech API` con `webkitSpeechRecognition`) combinada con síntesis de voz (`window.speechSynthesis`). Así, cuando el usuario presione el botón de llamada en la web, el sistema podrá escuchar comandos básicos de voz y responder verbalmente a las alertas del sistema.
+3. **Optimización del Modelo 3D sin sobrecargar la vista:**
+Para mantener la interfaz limpia y sin cansancio visual, utiliza librerías ligeras como **Three.js** o contenedores con SVG interactivos y animaciones CSS muy fluidas en lugar de elementos recargados 3D pesados. Esto mantendrá la fluidez en equipos modestos (como la MacBook antigua de su equipo, mencionada en la documentación).
+
+
+SEGUNDO PRONT
+Aquí tienes un **prompt detallado, estructurado y profesional** diseñado específicamente para que lo utilices en tu herramienta de desarrollo o IA y apliques todas estas mejoras de manera precisa en tu proyecto **MedNexus-OS**.
+
+---
+
+### Prompt Detallado para Actualizar la Aplicación (MedNexus-OS)
+
+```text
+Actualiza la aplicación web "MedNexus-OS" (Next.js / React con Tailwind CSS) implementando las siguientes modificaciones avanzadas en diseño, interactividad y funcionalidad clínica:
+
+1. Identidad Visual y Logotipo:
+   - Configura el logotipo oficial de la plataforma utilizando la imagen adjunta (icono de médico con estetoscopio y tonos azules profesionales).
+   - Actualiza la barra superior (header) y la pantalla de carga para mostrar este logotipo con alta nitidez y proporciones equilibradas.
+
+2. Médico Principal y Perfil Clínico:
+   - Modifica el perfil del médico principal de la plataforma. Su nombre oficial debe ser: "José Daniel Pabón Villanueva".
+   - Adjunta su fotografía personalizada y adapta su interfaz con una credencial/tarjeta de médico especialista de alta gama, mostrando estado de disponibilidad en tiempo real, especialidad en ingeniería y seguridad clínica, y accesos directos a sus funciones de supervisión.
+
+3. Rediseño del Equipo Médico (Estilo HUD / Dragon Ball Xenoverse 2):
+   - Reimagina las tarjetas del módulo de "Equipo Médico" inspirándote en el diseño de interfaz HUD de juegos de combate táctico (como el estilo de barras de estado y avatares flotantes de Dragon Ball Xenoverse 2, tal como se muestra en la referencia visual).
+   - Cada médico debe contar con un marco poligonal o circular distintivo para su avatar en la esquina superior de su tarjeta, acompañado de barras de estado estilizadas (ej. Nivel de actividad, energía/disponibilidad y ranuras de especialidad) con etiquetas claras (P1 / Especialista Activo).
+
+4. Corrección de Colorimetría y Legibilidad:
+   - Revisa y corrige los contrastes de color en el apartado de "Equipo Médico" y paneles secundarios.
+   - Asegúrate de que el texto sobre fondo claro u oscuro cumpla con estándares de accesibilidad visual (alta legibilidad, sin fatiga visual, usando blancos puros, grises oscuros profesionales y acentos en azul clínico y verde seguro).
+
+5. Chat Interactivo de Voz con Permisos de Micrófono:
+   - Arregla y programa el componente del "Asistente de Voz Clínico" para que solicite explícitamente los permisos de hardware mediante la API del navegador (`navigator.mediaDevices.getUserMedia({ audio: true })`).
+   - Implementa una interfaz de llamada interactiva con ondas de audio animadas en tiempo real cuando el usuario hable, simulación de transcripción de voz a texto en pantalla y respuestas conversacionales orientadas a reportes de incidencias o triage médico.
+
+6. Modelos 3D Avanzados y Módulo de Radiografías:
+   - Mejora la fidelidad y detalle de los modelos 3D interactivos (usando Three.js / React Three Fiber). Amplía el catálogo para incluir modelos anatómicos específicos de fracturas óseas, patologías comunes y estructuras celulares o de equipos biomédicos.
+   - Añade a cada expediente de paciente una sección interactiva de "Estudios de Imagen / Radiografías" (tanto en formato de imagen clínica detallada como en visualizador 3D interactivo) que permita examinar las lesiones o diagnósticos simulados de forma visual.
+
+7. Integración de Hospitales Cercanos (Google Maps):
+   - Agrega un nuevo componente o pestaña de "Ubicaciones y Red Hospitalaria" que integre Google Maps de forma interactiva.
+   - El sistema debe detectar la ubicación actual de ejecución (por defecto Medellín, Colombia) y desplegar un mapa dinámico con marcadores de hospitales, clínicas y centros de salud cercanos, mostrando tiempos estimados de traslado y números de contacto de emergencia.
+
+```
+
+---
+
+### Consejos prácticos para la implementación:
+
+* **Para el Micrófono:** Asegúrate de ejecutar tu servidor local en `localhost` o mediante HTTPS, ya que los navegadores modernos bloquean los permisos de `getUserMedia` en conexiones HTTP no seguras.
+* **Para los Modelos 3D:** Puedes apoyarte en geometrías compuestas en Three.js o cargar archivos `.glb` ligeros para representar las fracturas de manera más realista sin sobrecargar el rendimiento de la aplicación.
+
+
+
+Necesito que seas El QA
+has pruebas en el softwarer e identifica aspectos a mejorar, incoherencias que encuentes, y agrega funciones que veas que no se esten ejecutando, has la web funcional
+
+RESPUESTA
+## QA completado
+
+Revisé los flujos principales y corregí estas incoherencias:
+
+- La **agenda ahora funciona**: permite cambiar de mes y día, muestra las citas y salas de esa fecha, y presenta un estado vacío cuando no hay datos.
+- Las fechas de reserva y la próxima cita ya no aparecen vencidas. Las reservas siguen siendo simuladas.
+- Reemplacé **«LIVE · DEMO»** por una etiqueta que aclara que los datos son de ejemplo.
+- El acceso rápido del perfil ya navega al perfil clínico o a la historia del paciente.
+- El mapa de respaldo dejó de mostrar marcadores ficticios y su etiqueta sigue la ubicación detectada.
+- Ajusté el diseño del tablero para pantallas medianas.
+
+También reinicié el servidor de desarrollo: quedó activo en **http://localhost:3000**. El fallo 3D que encontré al inicio se debía a que el servidor compartía archivos de compilación con el build; después del reinicio, probé el visor desde un expediente y confirmé que abre y permite girar y acercar el modelo.
+
+**Verificación:** `npm run typecheck` y `npm run build` pasan. Probé manualmente pacientes, inventario y filtro de stock bajo, equipo y disponibilidad, agenda, reserva simulada, asistente por texto, perfil, mapa de respaldo y modelos 3D.
+
+Cambios principales: [MedNexusApp.tsx](C:/Users/josed/Documents/riwi/trabajo-ia/Pagina/MedNexus-OS/src/components/MedNexusApp.tsx), [mock-data.ts](C:/Users/josed/Documents/riwi/trabajo-ia/Pagina/MedNexus-OS/src/data/mock-data.ts), [HospitalNetworkMap.tsx](C:/Users/josed/Documents/riwi/trabajo-ia/Pagina/MedNexus-OS/src/components/HospitalNetworkMap.tsx) y [globals.css](C:/Users/josed/Documents/riwi/trabajo-ia/Pagina/MedNexus-OS/src/app/globals.css).
+
+## Pendiente para integración real
+
+- **Google Maps** requiere configurar `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` y habilitar las APIs indicadas en la pantalla. Sin esa clave no se cargan hospitales ni rutas reales.
+- Probé la conversación escrita del asistente; no activé el micrófono, así que la captura de audio y sus permisos quedan por validar desde el navegador.
+- Pacientes, citas, inventario y auditoría son datos de demostración; no se conectan a sistemas clínicos externos ni sirven para decisiones médicas.
+
+
+
+
+
+Actúa como un Arquitecto de Software Senior y Desarrollador Full-Stack experto en Next.js, React, Tailwind CSS y sistemas clínicos. Necesito que actualices y expanda de forma integral la plataforma web "MedNexus-OS" incorporando los siguientes módulos avanzados, datos enriquecidos e interactividad en tiempo real:
+1. Ampliación del Módulo de Topología y Red Hospitalaria:
+   - Expande el panel de topología para que muestre una red de nodos clínicos más amplia, compleja y visualmente atractiva (utilizando SVG interactivos o canvas).
+   - Agrega información y métricas ficticias detalladas para cada nodo (ej. Estado de servidores de UCI, latencia de red de telemedicina, carga de bases de datos de historias clínicas, estado de pasarelas de pago y seguridad perimetral).
+2. Gestión de Colaboradores (Nuevos Perfiles):
+   - Integra en el módulo de equipo/personal las fichas de perfil (inicialmente sin fotografía o con un avatar genérico por defecto) para los nuevos colaboradores del proyecto:
+     - Camilo Jaramillo (Especialista en Infraestructura y Redes)
+     - Yuliana Pérez (Especialista en Datos y Validación Clínica)
+   - Cada perfil debe incluir roles, permisos simulados y métricas de actividad dentro de la plataforma.
+3. Buscador Avanzado de Hospitales con Google Maps y Geolocalización:
+   - Mejora drásticamente el componente de ubicación hospitalaria integrando una interfaz de Google Maps interactiva.
+   - Implementa un menú desplegable y un buscador optimizado que liste los principales hospitales y centros de salud de Medellín, Colombia (como el Hospital Pablo Tobón Uribe, Clínica Las Américas, San Vicente Fundación, etc.).
+   - Añade una función de geolocalización que detecte la posición actual del usuario, calcule rutas/distancias estimadas a los centros de salud de la lista y muestre contactos de emergencia de manera dinámica.
+4. Interacción de Voz en Vivo y Tiempo Real (IA Conversacional):
+   - Optimiza el chat de voz interactivo para que funcione en tiempo real mediante la Web Speech API del navegador o simulación avanzada de streaming de audio.
+   - Haz que el asistente de voz responda de manera totalmente coherente, contextual y estructurada tanto a los comandos dictados por voz como al texto ingresado por el usuario, conectándose lógicamente con las acciones del sistema clínico.
+5. Enriquecimiento de Perfiles del Equipo Médico:
+   - Actualiza la información de los doctores disponibles (incluyendo al médico principal Dr. José Daniel Pabón Villanueva y la Dra. Valentina Ríos).
+   - Agrega historiales profesionales detallados basados en la experiencia real de médicos especialistas (años de trayectoria, número de intervenciones exitosas, certificaciones en normativas de salud y áreas de investigación clínica avanzada).
+6. Simulación de Cita Virtual y Triage Interactivo (Paso a Paso):
+   - Crea un nuevo flujo interactivo de "Consulta Virtual / Triage Asistido".
+   - El sistema debe guiar al paciente o médico mediante un menú de opciones múltiples paso a paso para describir síntomas, localización del dolor, intensidad y antecedentes.
+   - Integra la respuesta del chat de voz para que procese estas opciones seleccionadas y genere de forma automatizada un dictamen médico preliminar o recomendación de urgencia basada en el flujo de triage.
+7. Módulo de Calendario Clínico Avanzado:
+   - Rellena el calendario con datos ficticios e historiales de citas/turnos en días pasados para darle realismo a la interfaz.
+   - Añade una función interactiva que permita al rol de médico agregar, editar o programar nuevos eventos, guardias, cirugías o citas directamente en el calendario con persistencia en el estado local de la aplicación.
+8. Variación de Radiografías e Historial Clínico Profundo por Paciente:
+   - Amplia drásticamente los expedientes de los pacientes registrados.
+   - Cada paciente debe contar con una sección de "Estudios de Imagen y Radiografías" con alta variedad de casos clínicos y patologías distintas (ej. fracturas óseas complejas, neumonía, patologías pulmonares, lesiones articulares).
+   - Desarrolla historiales clínicos completos y profundos para cada paciente, incluyendo notas de evolución, signos vitales históricos, alergias, tratamientos activos y bitácoras de auditoría de seguridad.
+Asegúrate de mantener la colorimetría limpia, profesional y minimalista enfocada en el sector salud (blancos, azules clínicos y verdes suaves), optimizando la legibilidad en todas las vistas y garantizando que los componentes sean responsivos y fluidos.
+
+
+RESPUESTA
+12:00 AM
+
+
+
+
+
+
+Voy a integrar estos módulos sobre la estructura actual de MedNexus-OS. Primero revisaré cómo están conectados agenda, equipo, pacientes, mapa y voz; después haré los cambios procurando mantener los datos claramente marcados como simulados y evitar presentar triage o credenciales ficticias como información clínica real.
+
+
+
+
+Read files, ran commands
+
+
+
+La plataforma ya tiene versiones de demostración de agenda, equipo, red, voz y estudios 3D. Voy a ampliar esas rutas existentes en vez de duplicar módulos: la agenda tendrá persistencia local, el directorio y los expedientes mostrarán más detalle, y el triage quedará como guía de captura para revisión profesional, sin generar diagnósticos.
+
+
+
+
+Edited files, read files, ran commands, searched the web
+
+
+
+Estoy enriqueciendo los expedientes y la agenda con datos de demostración aislados, y añadiendo enlaces oficiales para centros de Medellín. También estoy manteniendo separadas las métricas simuladas de cualquier registro real; los perfiles no mostrarán certificaciones clínicas como verificadas si no hay evidencia institucional.
+
+
+
+
+Edited files, ran a command
+
+
+
+Optimized the conversation
+
+
+
+Worked for 12m 14s
+
+
+
+Voy a terminar de conectar los módulos nuevos con la navegación y los datos existentes. Después revisaré que el proyecto compile y que las acciones principales queden utilizables; los datos clínicos y de actividad seguirán marcados como demostrativos.
+
+
+PRONT Manana
+
+Actúa como un Arquitecto de Software Senior y Desarrollador Full-Stack experto en Next.js, React, Tailwind CSS y sistemas clínicos. Necesito que actualices y expanda de forma integral la plataforma web "MedNexus-OS" incorporando los siguientes módulos avanzados, datos enriquecidos e interactividad en tiempo real:
+
+1. Ampliación del Módulo de Topología y Red Hospitalaria:
+   - Expande el panel de topología para que muestre una red de nodos clínicos más amplia, compleja y visualmente atractiva (utilizando SVG interactivos o canvas).
+   - Agrega información y métricas ficticias detalladas para cada nodo (ej. Estado de servidores de UCI, latencia de red de telemedicina, carga de bases de datos de historias clínicas, estado de pasarelas de pago y seguridad perimetral).
+
+2. Gestión de Colaboradores (Nuevos Perfiles):
+   - Integra en el módulo de equipo/personal las fichas de perfil (inicialmente sin fotografía o con un avatar genérico por defecto) para los nuevos colaboradores del proyecto:
+     * Camilo Jaramillo (Especialista en Infraestructura y Redes)
+     * Yuliana Pérez (Especialista en Datos y Validación Clínica)
+   - Cada perfil debe incluir roles, permisos simulados y métricas de actividad dentro de la plataforma.
+
+3. Buscador Avanzado de Hospitales con Google Maps y Geolocalización:
+   - Mejora drásticamente el componente de ubicación hospitalaria integrando una interfaz de Google Maps interactiva.
+   - Implementa un menú desplegable y un buscador optimizado que liste los principales hospitales y centros de salud de Medellín, Colombia (como el Hospital Pablo Tobón Uribe, Clínica Las Américas, San Vicente Fundación, etc.).
+   - Añade una función de geolocalización que detecte la posición actual del usuario, calcule rutas/distancias estimadas a los centros de salud de la lista y muestre contactos de emergencia de manera dinámica.
+
+4. Interacción de Voz en Vivo y Tiempo Real (IA Conversacional):
+   - Optimiza el chat de voz interactivo para que funcione en tiempo real mediante la Web Speech API del navegador o simulación avanzada de streaming de audio.
+   - Haz que el asistente de voz responda de manera totalmente coherente, contextual y estructurada tanto a los comandos dictados por voz como al texto ingresado por el usuario, conectándose lógicamente con las acciones del sistema clínico.
+
+5. Enriquecimiento de Perfiles del Equipo Médico:
+   - Actualiza la información de los doctores disponibles (incluyendo al médico principal Dr. José Daniel Pabón Villanueva y la Dra. Valentina Ríos).
+   - Agrega historiales profesionales detallados basados en la experiencia real de médicos especialistas (años de trayectoria, número de intervenciones exitosas, certificaciones en normativas de salud y áreas de investigación clínica avanzada).
+
+6. Simulación de Cita Virtual y Triage Interactivo (Paso a Paso):
+   - Crea un nuevo flujo interactivo de "Consulta Virtual / Triage Asistido".
+   - El sistema debe guiar al paciente o médico mediante un menú de opciones múltiples paso a paso para describir síntomas, localización del dolor, intensidad y antecedentes.
+   - Integra la respuesta del chat de voz para que procese estas opciones seleccionadas y genere de forma automatizada un dictamen médico preliminar o recomendación de urgencia basada en el flujo de triage.
+
+7. Módulo de Calendario Clínico Avanzado:
+   - Rellena el calendario con datos ficticios e historiales de citas/turnos en días pasados para darle realismo a la interfaz.
+   - Añade una función interactiva que permita al rol de médico agregar, editar o programar nuevos eventos, guardias, cirugías o citas directamente en el calendario con persistencia en el estado local de la aplicación.
+
+8. Variación de Radiografías e Historial Clínico Profundo por Paciente:
+   - Amplia drásticamente los expedientes de los pacientes registrados.
+   - Cada paciente debe contar con una sección de "Estudios de Imagen y Radiografías" con alta variedad de casos clínicos y patologías distintas (ej. fracturas óseas complejas, neumonía, patologías pulmonares, lesiones articulares).
+   - Desarrolla historiales clínicos completos y profundos para cada paciente, incluyendo notas de evolución, signos vitales históricos, alergias, tratamientos activos y bitácoras de auditoría de seguridad.
+
+Asegúrate de mantener la colorimetría limpia, profesional y minimalista enfocada en el sector salud (blancos, azules clínicos y verdes suaves), optimizando la legibilidad en todas las vistas y garantizando que los componentes sean responsivos y fluidos.
