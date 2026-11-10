@@ -1,12 +1,12 @@
 # Guía de MedNexus OS
 
-MedNexus OS es una primera fase interactiva de una estación de trabajo hospitalaria. Sirve para revisar navegación, flujos y lenguaje visual con información ficticia. Está pensada para una demo local y no procesa datos de pacientes reales.
+MedNexus OS es una primera fase interactiva de una estación de trabajo hospitalaria. Incluye centro de seguridad clínica, asistente de voz de demostración, red hospitalaria, modelos educativos 3D y perfil de supervisión. Sirve para revisar navegación, flujos y lenguaje visual; no procesa datos de pacientes reales.
 
 ## 1. Requisitos e instalación
 
 - Node.js 20.9 o posterior.
 - npm.
-- Conexión a internet durante la primera instalación. Los retratos profesionales también se cargan desde Unsplash.
+- Conexión a internet durante la instalación. La foto principal y el logotipo están en `public/`; algunos retratos del directorio se cargan desde Unsplash.
 
 Desde la carpeta del proyecto:
 
@@ -30,18 +30,24 @@ El botón ES / EN cambia las etiquetas y mensajes entre español e inglés. La i
 
 ### Espacio clínico
 
-**Resumen**
+**Seguridad clínica**
 
-- Indicadores simulados de citas, pacientes, inventario y disponibilidad.
-- Agenda resumida con motivos de consulta ficticios.
-- Ocupación visual de consultorios y lista de pacientes del turno.
-- Aviso de que los datos son de demostración.
+- Resume el estado simulado de historias clínicas, monitoreo de pacientes y servidores de farmacia.
+- Permite cambiar la etiqueta del entorno hospitalario de demostración; el selector no cambia una conexión ni los datos.
+- La topología 3D permite seleccionar nodos, rotar y acercar la escena.
+- El asistente pide acceso al micrófono solo al pulsar **Activar micrófono**. Muestra un medidor de volumen y transcripción si el navegador tiene Web Speech; si no, permite escribir el reporte. La transcripción puede usar un servicio externo del navegador. No se graba ni almacena audio desde esta app.
+- Las respuestas son locales y predefinidas: ayudan a estructurar un reporte técnico, pero no contactan al equipo de TI ni prestan triage o diagnóstico. Si se menciona una emergencia, el panel dirige a atención local; en Medellín muestra la línea 123.
+- Las recomendaciones y sus etiquetas HIPAA o de política interna son referencias ficticias; no verifican cumplimiento normativo.
+- La cronología filtra eventos sintéticos por fecha, sistema y nivel. Al expandir una fila se muestra actor, origen y detalle; marcar como revisado solo modifica el estado local de la demostración.
+
+La agenda, los pacientes y el inventario siguen disponibles en la navegación lateral como módulos separados.
 
 **Pacientes**
 
 - Busca por nombre, código ficticio, ciudad o especialidad.
 - Filtra por estado: en espera, listo o en consulta.
 - Abre una ficha para revisar edad, ciudad, grupo sanguíneo, alergias y antecedentes ficticios.
+- Cada ficha incluye una ilustración radiográfica sintética con zoom y un selector de modelos educativos 3D (fractura, osteoporosis, neumonía, célula o equipo biomédico).
 - Las fichas no tienen controles para editar diagnósticos o historia.
 
 **Inventario**
@@ -55,7 +61,7 @@ El botón ES / EN cambia las etiquetas y mensajes entre español e inglés. La i
 **Equipo médico**
 
 - Filtra el directorio ficticio por especialidad, turno y estado.
-- Las tarjetas incluyen retratos de muestra, experiencia, departamento y estado simulado.
+- Las tarjetas tienen marcos de avatar y barras HUD de actividad/disponibilidad con etiquetas P1, especialista activo y estados del turno. Son indicadores visuales de datos ficticios, no métricas reales del personal.
 - La ficha puede abrir una reserva con especialidad y profesional preseleccionados.
 
 **Agenda**
@@ -63,6 +69,11 @@ El botón ES / EN cambia las etiquetas y mensajes entre español e inglés. La i
 - Muestra citas simuladas con hora, profesional, consultorio y motivo.
 - El calendario es una vista de maqueta.
 - La tabla de recursos incluye consultorios y programación de quirófanos ficticios.
+
+**Red hospitalaria**
+
+- Integra Maps JavaScript API, Places API (New) y Routes API al configurar `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`. Usa Medellín como centro inicial y pide ubicación bajo acción del usuario, excepto si el navegador ya la había autorizado.
+- Para activar Maps, copia `.env.example` a `.env.local`, añade una clave restringida por origen web y habilita las APIs correspondientes en Google Cloud. Las solicitudes y la facturación dependen de la cuenta de Maps.
 
 ### Portal del paciente
 
@@ -87,13 +98,13 @@ La confirmación solo muestra un mensaje local. No se crea una cita en un calend
 - Presenta identidad, grupo sanguíneo, alergias y antecedentes inventados.
 - La insignia de firma es ilustrativa, no es una firma criptográfica.
 - No hay editor para el paciente. El historial se visualiza como solo lectura.
-- El modelo anatómico se abre desde Visualización clínica 3D. Es geometría sintética para explicar el visor; no contiene radiografías, estudios volumétricos ni datos de una lesión real.
+- La imagen sintética puede ampliarse y abrir modelos interactivos de hueso/fractura, esquemas de osteoporosis/neumonía, célula y equipo biomédico. No contiene radiografías reales, estudios volumétricos ni hallazgos de una persona.
 
 **Ayuda segura**
 
 - Repite las instrucciones para una urgencia.
 - Muestra un canal de orientación ficticio y una simulación de llamada con temporizador.
-- La simulación nunca activa un enlace telefónico, no abre el marcador y no transmite audio.
+- La simulación nunca abre el marcador. El asistente de voz clínico captura audio solo tras solicitar permiso y lo procesa en la página para animar el nivel de entrada. La transcripción Web Speech puede usar servicios del navegador; el proyecto no guarda la grabación.
 - El número +57 000 000 0000 es inválido y solo se usa para que la maqueta parezca una llamada. No lo sustituyas por un número operativo sin aprobación institucional.
 
 ## 3. Cómo funciona el visor 3D
@@ -103,8 +114,8 @@ src/components/MedicalScene.tsx genera modelos con primitivas de Three.js: cilin
 - Arrastra con mouse o dedo para rotar el objeto.
 - Usa la rueda o el gesto de acercamiento para hacer zoom.
 - El control de órbita limita la distancia y bloquea el desplazamiento lateral.
-- El tipo del modelo llega desde el fixture: jeringa, desfibrilador, prótesis, suministros o hueso ilustrativo.
-- La escena anatómica muestra una zona de color como anotación educativa, no como resultado clínico.
+- El tipo del modelo llega desde el fixture o el selector de estudios: equipo biomédico, hueso/fractura, esquemas de osteoporosis/neumonía y célula ilustrativa.
+- La escena anatómica muestra geometría de enseñanza, no un resultado clínico ni un diagnóstico.
 - El componente se carga solo en cliente porque WebGL depende del navegador.
 
 No se cargan modelos ni imágenes médicas de pacientes. El render del hueso es deliberadamente esquemático.
@@ -129,9 +140,11 @@ Los filtros del equipo se combinan por especialidad, turno y disponibilidad. Los
 
     src/app/layout.tsx                 Metadata, HTML base y CSS global
     src/app/page.tsx                   Ruta principal
-    src/app/globals.css                Diseño oscuro, responsivo y tema Tailwind
+    src/app/globals.css                Tema claro y responsivo
     src/components/MedNexusApp.tsx     Navegación, pantallas, filtros y modales
-    src/components/MedicalScene.tsx   Escenas interactivas Three.js / R3F
+    src/components/ClinicalSafetyDashboard.tsx  Panel de seguridad y simulaciones
+    src/components/NetworkTopology.tsx Escena de topología interactiva Three.js / R3F
+    src/components/MedicalScene.tsx   Escenas interactivas de catálogo Three.js / R3F
     src/data/mock-data.ts              Datos sintéticos colombianos
     src/lib/clinical-repository.ts     Adaptador de datos para la interfaz
     src/types/clinical.ts              Tipos del dominio

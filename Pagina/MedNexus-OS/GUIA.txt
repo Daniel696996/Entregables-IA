@@ -3,9 +3,9 @@ MEDNEXUS OS - GUIA RAPIDA
 
 QUE ES
 ------
-Demo web bilingue para una plataforma hospitalaria. Incluye espacio clinico,
-portal del paciente, agenda, inventario, equipo medico, historial de solo
-lectura, orientacion de seguridad y modelos 3D ficticios.
+Demo web bilingue para operaciones hospitalarias. Incluye panel de seguridad,
+perfil de supervision, portal del paciente, agenda, inventario, equipo medico,
+red hospitalaria en Google Maps, estudios sintéticos y modelos 3D educativos.
 
 INICIAR
 -------
@@ -33,10 +33,21 @@ Esto solo cambia la vista local; no es autenticacion ni control de acceso.
 FUNCIONES
 ---------
 Clinico:
-- Resumen de citas, pacientes asignados, inventario y disponibilidad.
+- Seguridad clinica: estado de HCE, monitoreo de pacientes y servidores de farmacia.
+- Topologia 3D: selecciona nodos, arrastra para rotar y acerca con rueda o gesto.
+- Asistente: solicita permiso de microfono al iniciarlo, muestra nivel de audio
+  y transcripcion Web Speech cuando el navegador lo admite. La transcripcion
+  puede usar servicios del navegador; el proyecto no guarda la grabacion.
+- Respuestas locales de demostracion para reportes de fallos o consultas; no
+  ofrece triage ni diagnosticos. En Medellin, indica la linea de emergencias 123.
+- Red hospitalaria: configura la clave de Google Maps en .env.local para buscar
+  hospitales cercanos, contactos publicados y estimaciones de ruta desde Medellin.
+- Recomendaciones defensivas de ejemplo para revisar con el equipo de TI.
+- Cronologia de auditoria: filtra por fecha, sistema y nivel; los detalles y cambios son ficticios y locales.
 - Pacientes: busca por nombre, codigo, ciudad o especialidad; filtra por estado.
 - Inventario: filtra por categoria, via/especificacion, texto y stock critico.
-- Equipo medico: filtra por especialidad, turno y disponibilidad.
+- Equipo medico: filtra por especialidad, turno y disponibilidad; sus barras
+  HUD son valores ficticios, no metricas del personal.
 - Agenda: consulta citas, consultorios y quirofanos ficticios.
 - Abre un producto para rotar y acercar el modelo 3D.
 
@@ -44,14 +55,16 @@ Paciente:
 - Consulta resumen de salud y proxima cita simulada.
 - Busca especialidad, profesional, fecha y modalidad para reservar.
 - La reserva solo muestra una confirmacion local.
-- Consulta el historial firmado de solo lectura y abre el hueso ilustrativo 3D.
+- Consulta el historial ficticio, amplía una radiografia sintética y abre modelos
+  3D de hueso/fractura, osteoporosis, neumonía, célula o equipo biomédico.
 - Abre Ayuda segura para leer el mensaje de emergencia y probar la llamada demo.
 
 VISOR 3D
 --------
 Arrastra el objeto con el mouse o el dedo para rotarlo. Usa la rueda o el gesto
 de acercamiento para hacer zoom. Los modelos se generan en el navegador usando
-Three.js y React Three Fiber. No se cargan radiografias ni imagenes de pacientes.
+Three.js y React Three Fiber. Las imágenes y modelos son sintéticos y no sirven
+para diagnóstico ni sustituyen estudios clínicos.
 
 La escena del hueso y la zona resaltada son ilustrativas y no diagnostican.
 
@@ -65,9 +78,9 @@ La app no diagnostica ni recomienda tratamientos o dosis. Ante una urgencia,
 acude al centro hospitalario mas cercano. En una emergencia real, contacta los
 servicios locales y solicita una ambulancia desde un dispositivo real.
 
-El boton de llamada solo abre una animacion local. El numero +57 000 000 0000
-es invalido y no llama a ningun servicio. No se abre el marcador ni se transmite
-audio.
+La simulacion de llamada solo abre una animacion local. El asistente de voz sí
+captura audio si la persona concede permiso; la app no lo almacena. El navegador
+puede enviar la transcripcion a su servicio de reconocimiento.
 
 La demo no se conecta a una EPS, IPS, hospital, base de datos o servicio de
 emergencias. No genera prescripciones ni reserva espacios reales.

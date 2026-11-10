@@ -32,6 +32,38 @@ function SceneObject({ model }: { model: InventoryModel }) {
     <Joint position={[0.1, 0.16, 0.13]} scale={[0.22, 0.19, 0.22]} color="#ff6478" />
     <Joint position={[0.1, 0.16, 0.13]} scale={[0.1, 0.095, 0.1]} color="#ffabb5" />
   </group>;
+  if (model === "fracture") return <group rotation={[0.08, 0, -0.12]}>
+    <Joint position={[0, 0.85, 0]} scale={[0.38, 0.3, 0.32]} color="#e3dfd3" />
+    <Cylinder position={[0, 0.46, 0]} radiusTop={0.145} radiusBottom={0.15} height={0.48} color="#e3dfd3" />
+    <Cylinder position={[0, -0.42, 0]} radiusTop={0.15} radiusBottom={0.14} height={0.92} color="#e3dfd3" />
+    <Joint position={[0, -0.9, 0]} scale={[0.34, 0.28, 0.3]} color="#e3dfd3" />
+    <Box position={[0.015, 0.02, 0.14]} scale={[0.42, 0.07, 0.025]} rotation={[0, 0, -0.58]} color="#df756f" />
+    <Box position={[-0.015, -0.1, 0.14]} scale={[0.38, 0.055, 0.025]} rotation={[0, 0, -0.58]} color="#df756f" />
+  </group>;
+  if (model === "lung" || model === "pneumonia") return <group>
+    <Cylinder position={[0, 0.68, 0]} radiusTop={0.11} radiusBottom={0.11} height={0.82} color="#6e9fb1" />
+    <Cylinder position={[-0.22, 0.28, 0]} radiusTop={0.07} radiusBottom={0.055} height={0.62} rotation={[0, 0, -0.72]} color="#6e9fb1" />
+    <Cylinder position={[0.22, 0.28, 0]} radiusTop={0.07} radiusBottom={0.055} height={0.62} rotation={[0, 0, 0.72]} color="#6e9fb1" />
+    <Joint position={[-0.48, -0.15, 0]} scale={[0.47, 0.8, 0.32]} color="#90c9cf" />
+    <Joint position={[0.48, -0.15, 0]} scale={[0.47, 0.8, 0.32]} color="#90c9cf" />
+    <Cylinder position={[0, 0.1, 0.06]} radiusTop={0.035} radiusBottom={0.035} height={0.72} rotation={[0, 0, Math.PI / 2]} color="#e29a9b" />
+    {model === "pneumonia" && <><Joint position={[-0.38, -0.12, 0.29]} scale={[0.23, 0.28, 0.09]} color="#e99a74" /><Joint position={[0.49, -0.31, 0.26]} scale={[0.2, 0.25, 0.09]} color="#e99a74" /><Joint position={[-0.1, -0.17, 0.25]} scale={[0.11, 0.12, 0.08]} color="#f4c37d" /></>}
+  </group>;
+  if (model === "osteoporosis") return <group rotation={[0.08, 0, -0.08]}>
+    <Joint position={[0, 0.82, 0]} scale={[0.4, 0.33, 0.34]} color="#e1ddd0" />
+    <Cylinder position={[0, 0, 0]} radiusTop={0.15} radiusBottom={0.16} height={1.5} color="#e1ddd0" />
+    <Joint position={[0, -0.84, 0]} scale={[0.35, 0.3, 0.34]} color="#e1ddd0" />
+    {[[-0.08, 0.48, 0.13], [0.09, 0.31, 0.14], [-0.1, 0.08, 0.14], [0.07, -0.14, 0.14], [-0.08, -0.38, 0.14], [0.08, -0.57, 0.13]].map(([x, y, z], index) => <Joint key={index} position={[x, y, z] as [number, number, number]} scale={[0.045, 0.045, 0.025]} color="#b79b81" />)}
+  </group>;
+  if (model === "cell") return <group>
+    <Joint position={[0, 0, 0]} scale={[0.93, 0.82, 0.68]} color="#a8d4cf" />
+    <Joint position={[-0.12, 0.1, 0.52]} scale={[0.38, 0.34, 0.16]} color="#7ba7c3" />
+    <Joint position={[-0.12, 0.1, 0.65]} scale={[0.22, 0.18, 0.08]} color="#668cb0" />
+    <Joint position={[0.44, -0.3, 0.43]} scale={[0.2, 0.11, 0.1]} color="#d99b72" />
+    <Joint position={[-0.48, -0.35, 0.37]} scale={[0.18, 0.1, 0.09]} color="#d99b72" />
+    <Joint position={[0.4, 0.38, 0.32]} scale={[0.09, 0.09, 0.07]} color="#e7bd75" />
+    <Joint position={[-0.55, 0.32, 0.28]} scale={[0.07, 0.07, 0.06]} color="#e7bd75" />
+  </group>;
   if (model === "syringe") return <group>
     <Cylinder position={[0, 0, 0]} radiusTop={0.17} radiusBottom={0.2} height={1.65} color="#8bcbd6" />
     <Cylinder position={[0, 0.95, 0]} radiusTop={0.055} radiusBottom={0.055} height={0.22} color="#a6bbca" />

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MedNexus OS | Clinical workspace",
-  description: "Demo bilingüe de coordinación clínica y cuidado del paciente.",
+  title: "MedNexus OS | Hospital management & clinical safety",
+  description: "Panel hospitalario bilingüe con seguridad clínica, red de atención y modelos educativos 3D.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

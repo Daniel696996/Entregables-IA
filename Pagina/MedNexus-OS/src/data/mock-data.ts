@@ -1,4 +1,4 @@
-import type { Clinician, InventoryItem, Patient } from "@/types/clinical";
+import type { Clinician, HospitalFacility, InventoryItem, Patient, PatientClinicalDetail, ProjectCollaborator } from "@/types/clinical";
 
 // Perfiles, centros, atenciones e insumos completamente ficticios.
 // La geografía colombiana se usa como contexto de demo, nunca como directorio real.
@@ -42,20 +42,83 @@ export const clinicians: Clinician[] = [
   { name: "Natalia Parra", title: "Oftalmología", initials: "NP", experience: "10 años · segmento anterior y prevención visual", status: "available", department: "Consulta externa", shift: "Tarde", color: "blue", portrait: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&h=160&q=80" },
 ];
 
+export const projectCollaborators: ProjectCollaborator[] = [
+  { name: "Camilo Jaramillo", initials: "CJ", title: "Especialista en Infraestructura y Redes", department: "Operaciones tecnológicas", role: "Administrador de red · demo", color: "blue", permissions: ["Supervisión de nodos", "Gestión de incidentes", "Lectura de telemetría"], activity: { reviews: 18, tasks: 12, availability: "available" } },
+  { name: "Yuliana Pérez", initials: "YP", title: "Especialista en Datos y Validación Clínica", department: "Calidad y datos", role: "Validadora de datos · demo", color: "violet", permissions: ["Validación de fixtures", "Revisión de calidad", "Lectura de auditoría"], activity: { reviews: 24, tasks: 9, availability: "busy" } },
+];
+
+const patientStudyBySpecialty: Record<string, { title: string; bodyArea: string; model: PatientClinicalDetail["studies"][number]["model"]; summary: string }> = {
+  Cardiología: { title: "Esquema cardiovascular", bodyArea: "Tórax · referencia educativa", model: "defibrillator", summary: "Ilustración de sistema de monitorización cardiovascular. No es un electrocardiograma ni un estudio del paciente." },
+  Ortopedia: { title: "Radiografía ósea sintética", bodyArea: "Extremidad · referencia educativa", model: "fracture", summary: "Esquema de fractura para explorar el visor 3D. No corresponde a una imagen clínica real." },
+  Neurología: { title: "Esquema neuroanatómico", bodyArea: "Sistema nervioso · referencia educativa", model: "cell", summary: "Ilustración celular para enseñanza. No representa tejido ni hallazgos de una persona." },
+  "Medicina interna": { title: "Esquema anatómico general", bodyArea: "Referencia educativa", model: "cell", summary: "Modelo anatómico sintético. No constituye un estudio diagnóstico." },
+  Dermatología: { title: "Esquema de tejido cutáneo", bodyArea: "Piel · referencia educativa", model: "cell", summary: "Ilustración celular genérica; no representa una lesión ni hallazgos dermatológicos." },
+  "Pediatría y endocrinología": { title: "Esquema óseo pediátrico", bodyArea: "Extremidad · referencia educativa", model: "bone", summary: "Modelo anatómico sintético para explorar estructuras óseas, sin relación con un paciente real." },
+  "Medicina familiar": { title: "Esquema respiratorio", bodyArea: "Tórax · referencia educativa", model: "lung", summary: "Ilustración sintética de pulmones para enseñanza, sin valor diagnóstico." },
+  Oftalmología: { title: "Esquema celular ocular", bodyArea: "Referencia educativa", model: "cell", summary: "Modelo celular genérico. No es una fotografía ni un estudio oftalmológico." },
+  Ginecología: { title: "Esquema anatómico", bodyArea: "Referencia educativa", model: "cell", summary: "Ilustración educativa sintética, no específica de una paciente." },
+  Neumología: { title: "Esquema pulmonar", bodyArea: "Tórax · referencia educativa", model: "pneumonia", summary: "Esquema educativo de neumonía; no describe diagnóstico ni hallazgos de una persona." },
+  Endocrinología: { title: "Esquema celular endocrino", bodyArea: "Referencia educativa", model: "cell", summary: "Ilustración celular genérica sin mediciones ni hallazgos clínicos." },
+};
+
+export const patientClinicalDetails: Record<string, PatientClinicalDetail> = Object.fromEntries(patients.map((patient, index) => {
+  const study = patientStudyBySpecialty[patient.specialty] || patientStudyBySpecialty["Medicina interna"];
+  const heartRate = 68 + ((index * 7) % 17);
+  const systolic = 108 + ((index * 5) % 20);
+  const diastolic = 68 + ((index * 3) % 14);
+  const saturation = 96 + (index % 4);
+  return [patient.id, {
+    notes: [
+      { date: "2026-11-08", type: "Evolución", author: patient.doctor, summary: `Nota de seguimiento ficticia para ${patient.specialty.toLocaleLowerCase()}; requiere revisión por profesional autorizado.` },
+      { date: "2026-10-22", type: "Control", author: "Equipo de demostración", summary: "Se revisa continuidad del registro de ejemplo. Sin órdenes ni cambios terapéuticos reales." },
+      { date: "2026-09-30", type: "Admisión", author: "Registro simulado", summary: "Ingreso de datos inventados para demostrar cronología y auditoría local." },
+    ],
+    vitals: [
+      { date: "2026-11-08", bloodPressure: `${systolic}/${diastolic} mmHg`, heartRate: `${heartRate} lpm`, temperature: `${(36.4 + (index % 5) * 0.1).toFixed(1)} °C`, oxygenSaturation: `${saturation}%` },
+      { date: "2026-10-22", bloodPressure: `${systolic - 2}/${diastolic} mmHg`, heartRate: `${heartRate + 2} lpm`, temperature: "36.6 °C", oxygenSaturation: "97%" },
+      { date: "2026-09-30", bloodPressure: `${systolic + 1}/${diastolic + 1} mmHg`, heartRate: `${heartRate - 1} lpm`, temperature: "36.5 °C", oxygenSaturation: "98%" },
+    ],
+    studies: [{ date: "2026-11-08", ...study }],
+    activePlan: ["Seguimiento y plan de cuidado: dato de demostración sin orden médica.", "Validar cualquier información con el equipo tratante antes de tomar decisiones."],
+    audit: [
+      { date: "2026-11-08 09:42", action: "Consulta de expediente", actor: patient.doctor, result: "Acceso simulado autorizado" },
+      { date: "2026-11-08 09:43", action: "Visualización de estudio educativo", actor: "Visor MedNexus demo", result: "Evento local de muestra" },
+    ],
+  } satisfies PatientClinicalDetail];
+})) as Record<string, PatientClinicalDetail>;
+
+export const medellinFacilities: HospitalFacility[] = [
+  { id: "hptu", name: "Hospital Pablo Tobón Uribe", address: "Calle 78B No. 69–240, Robledo, Medellín", phone: "+57 604 445 9000", mapsQuery: "Hospital Pablo Tobón Uribe, Medellín", officialUrl: "https://hptu.org/pages/contacto" },
+  { id: "las-americas", name: "Clínica Las Américas Auna", address: "Diagonal 75B No. 2A–80/140, Medellín", phone: "+57 604 342 1010", mapsQuery: "Clínica Las Américas Auna, Medellín", officialUrl: "https://www.lasamericas.com.co/es-es/Institucional/Cont%C3%A1ctenos" },
+  { id: "san-vicente", name: "Hospital San Vicente Fundación · Medellín", address: "Medellín, Antioquia", phone: "+57 604 444 1333", mapsQuery: "Hospital San Vicente Fundación Medellín", officialUrl: "https://hospitalmedellin.sanvicentefundacion.com/contactanos" },
+];
+
 export const appointments = [
-  { time: "08:30", patientId: "MN-CO-2048", service: "Cardiología", room: "Consultorio 204", color: "violet" },
-  { time: "09:00", patientId: "MN-CO-2051", service: "Ortopedia", room: "Consultorio 208", color: "blue" },
-  { time: "09:30", patientId: "MN-CO-2056", service: "Neurología", room: "Consultorio 212", color: "green" },
-  { time: "10:15", patientId: "MN-CO-2060", service: "Medicina interna", room: "Consultorio 206", color: "amber" },
-  { time: "11:00", patientId: "MN-CO-2064", service: "Dermatología", room: "Consultorio 201", color: "pink" },
+  { date: "2026-11-03", time: "07:00", patientId: "MN-CO-2051", service: "Cirugía · bloque histórico demo", room: "Quirófano 02", color: "blue" },
+  { date: "2026-11-04", time: "08:00", patientId: "MN-CO-2056", service: "Neurología · control histórico demo", room: "Consultorio 212", color: "green" },
+  { date: "2026-11-05", time: "08:30", patientId: "MN-CO-2048", service: "Cardiología", room: "Consultorio 204", color: "violet" },
+  { date: "2026-11-05", time: "09:00", patientId: "MN-CO-2051", service: "Ortopedia", room: "Consultorio 208", color: "blue" },
+  { date: "2026-11-05", time: "09:30", patientId: "MN-CO-2056", service: "Neurología", room: "Consultorio 212", color: "green" },
+  { date: "2026-11-05", time: "10:15", patientId: "MN-CO-2060", service: "Medicina interna", room: "Consultorio 206", color: "amber" },
+  { date: "2026-11-05", time: "11:00", patientId: "MN-CO-2064", service: "Dermatología", room: "Consultorio 201", color: "pink" },
+  { date: "2026-11-09", time: "08:15", patientId: "MN-CO-2048", service: "Cardiología · control histórico demo", room: "Consultorio 204", color: "violet" },
+  { date: "2026-11-10", time: "09:00", patientId: "MN-CO-2060", service: "Medicina interna · demostración", room: "Consultorio 206", color: "amber" },
+  { date: "2026-11-10", time: "10:30", patientId: "MN-CO-2078", service: "Medicina familiar · demostración", room: "Consultorio 210", color: "rose" },
+  { date: "2026-11-12", time: "13:30", patientId: "MN-CO-2093", service: "Neumología · demostración", room: "Consultorio 214", color: "cyan" },
 ];
 
 export const rooms = [
-  { name: "Consultorio 204", type: "Consulta externa", status: "Ocupado", time: "08:30–09:30", clinician: "Dra. Valentina Ríos", capacity: "1 paciente" },
-  { name: "Consultorio 208", type: "Ortopedia", status: "Ocupado", time: "09:00–10:00", clinician: "Dr. Mateo Vélez", capacity: "1 paciente" },
-  { name: "Quirófano 02", type: "Cirugía programada", status: "Ocupado", time: "07:00–12:00", clinician: "Equipo de ortopedia", capacity: "Equipo clínico" },
-  { name: "Consultorio 212", type: "Neurología", status: "Disponible", time: "10:00–13:00", clinician: "Dra. Camila Luna", capacity: "1 paciente" },
-  { name: "Sala de procedimientos 01", type: "Procedimientos", status: "Disponible", time: "12:00–16:00", clinician: "Asignación pendiente", capacity: "4 puestos" },
+  { date: "2026-11-03", name: "Quirófano 02", type: "Cirugía programada · demo", status: "Ocupado", time: "07:00–11:00", clinician: "Equipo de ortopedia", capacity: "Equipo clínico" },
+  { date: "2026-11-04", name: "Consultorio 212", type: "Neurología", status: "Ocupado", time: "08:00–09:00", clinician: "Dra. Camila Luna", capacity: "1 paciente" },
+  { date: "2026-11-05", name: "Consultorio 204", type: "Consulta externa", status: "Ocupado", time: "08:30–09:30", clinician: "Dra. Valentina Ríos", capacity: "1 paciente" },
+  { date: "2026-11-05", name: "Consultorio 208", type: "Ortopedia", status: "Ocupado", time: "09:00–10:00", clinician: "Dr. Mateo Vélez", capacity: "1 paciente" },
+  { date: "2026-11-05", name: "Quirófano 02", type: "Cirugía programada", status: "Ocupado", time: "07:00–12:00", clinician: "Equipo de ortopedia", capacity: "Equipo clínico" },
+  { date: "2026-11-05", name: "Consultorio 212", type: "Neurología", status: "Disponible", time: "10:00–13:00", clinician: "Dra. Camila Luna", capacity: "1 paciente" },
+  { date: "2026-11-05", name: "Sala de procedimientos 01", type: "Procedimientos", status: "Disponible", time: "12:00–16:00", clinician: "Asignación pendiente", capacity: "4 puestos" },
+  { date: "2026-11-09", name: "Consultorio 204", type: "Cardiología", status: "Ocupado", time: "08:15–09:00", clinician: "Dra. Valentina Ríos", capacity: "1 paciente" },
+  { date: "2026-11-10", name: "Consultorio 206", type: "Medicina interna", status: "Ocupado", time: "09:00–10:00", clinician: "Dr. Samuel Ortiz", capacity: "1 paciente" },
+  { date: "2026-11-10", name: "Consultorio 210", type: "Medicina familiar", status: "Ocupado", time: "10:30–11:15", clinician: "Dr. Felipe Arango", capacity: "1 paciente" },
+  { date: "2026-11-12", name: "Consultorio 214", type: "Neumología", status: "Disponible", time: "13:00–16:00", clinician: "Dr. Samuel Ortiz", capacity: "1 paciente" },
 ];
 
 export const fictionalPatient = {
