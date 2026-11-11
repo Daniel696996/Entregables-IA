@@ -5,15 +5,15 @@ import type { Clinician, HospitalFacility, InventoryItem, Patient, PatientClinic
 export const patients: Patient[] = [
   { id: "MN-CO-2048", name: "Elena Martínez", initials: "EM", age: 42, city: "Medellín", department: "Antioquia", blood: "O+", specialty: "Cardiología", reason: "Control cardiovascular de seguimiento", status: "inConsultation", time: "08:30", allergies: ["Penicilina"], conditions: ["Hipertensión controlada (dato simulado)"], doctor: "Dra. Valentina Ríos", color: "violet" },
   { id: "MN-CO-2051", name: "Julián Torres", initials: "JT", age: 29, city: "Envigado", department: "Antioquia", blood: "A−", specialty: "Ortopedia", reason: "Revisión de recuperación posoperatoria", status: "waiting", time: "09:00", allergies: [], conditions: ["Recuperación posquirúrgica (dato simulado)"], doctor: "Dr. Mateo Vélez", color: "blue" },
-  { id: "MN-CO-2056", name: "Sofía Ramírez", initials: "SR", age: 67, city: "Rionegro", department: "Antioquia", blood: "B+", specialty: "Neurología", reason: "Control neurológico programado", status: "ready", time: "09:30", allergies: ["Látex"], conditions: ["Migraña crónica (dato simulado)"], doctor: "Dra. Camila Luna", color: "green" },
+  { id: "MN-CO-2056", name: "Sofía Ramírez", initials: "SR", age: 67, city: "Rionegro", department: "Antioquia", blood: "B+", specialty: "Neurología", reason: "Control neurológico programado", status: "ready", time: "09:30", allergies: ["Látex"], conditions: ["Migraña crónica (dato simulado)"], doctor: "Dra. Laura Vélez", color: "green" },
   { id: "MN-CO-2060", name: "Andrés Gómez", initials: "AG", age: 51, city: "Medellín", department: "Antioquia", blood: "AB+", specialty: "Medicina interna", reason: "Consulta de seguimiento integral", status: "waiting", time: "10:15", allergies: [], conditions: ["Diabetes tipo 2 (dato simulado)"], doctor: "Dr. Samuel Ortiz", color: "amber" },
   { id: "MN-CO-2064", name: "Lucía Herrera", initials: "LH", age: 34, city: "Bello", department: "Antioquia", blood: "O−", specialty: "Dermatología", reason: "Valoración dermatológica", status: "ready", time: "11:00", allergies: ["Níquel"], conditions: [], doctor: "Dra. Isabella Cruz", color: "pink" },
-  { id: "MN-CO-2072", name: "Tomás Cárdenas", initials: "TC", age: 8, city: "Medellín", department: "Antioquia", blood: "A+", specialty: "Pediatría", reason: "Control pediátrico preventivo", status: "waiting", time: "11:30", allergies: ["Polen (referido)"], conditions: [], doctor: "Dra. Paula Mejía", color: "cyan" },
+  { id: "MN-CO-2072", name: "Tomás Cárdenas", initials: "TC", age: 8, city: "Medellín", department: "Antioquia", blood: "A+", specialty: "Pediatría", reason: "Control pediátrico preventivo", status: "waiting", time: "11:30", allergies: ["Polen (referido)"], conditions: [], doctor: "Dra. Andrea Salazar", color: "cyan" },
   { id: "MN-CO-2078", name: "Mariana Pardo", initials: "MP", age: 73, city: "La Ceja", department: "Antioquia", blood: "O+", specialty: "Medicina familiar", reason: "Revisión de atención domiciliaria", status: "ready", time: "12:00", allergies: [], conditions: ["Antecedente cardiovascular (simulado)"], doctor: "Dr. Felipe Arango", color: "rose" },
   { id: "MN-CO-2081", name: "David Muñoz", initials: "DM", age: 38, city: "Medellín", department: "Antioquia", blood: "B−", specialty: "Oftalmología", reason: "Seguimiento visual anual", status: "waiting", time: "13:15", allergies: [], conditions: [], doctor: "Dra. Natalia Parra", color: "blue" },
-  { id: "MN-CO-2086", name: "Sara Quintero", initials: "SQ", age: 26, city: "Itagüí", department: "Antioquia", blood: "AB−", specialty: "Ginecología", reason: "Consulta de salud preventiva", status: "ready", time: "14:00", allergies: ["Yodo (referido)"], conditions: [], doctor: "Dra. Camila Luna", color: "pink" },
+  { id: "MN-CO-2086", name: "Sara Quintero", initials: "SQ", age: 26, city: "Itagüí", department: "Antioquia", blood: "AB−", specialty: "Ginecología", reason: "Consulta de salud preventiva", status: "ready", time: "14:00", allergies: ["Yodo (referido)"], conditions: [], doctor: "Dra. Laura Vélez", color: "pink" },
   { id: "MN-CO-2093", name: "Miguel Ángel Castro", initials: "MC", age: 59, city: "Medellín", department: "Antioquia", blood: "A−", specialty: "Neumología", reason: "Revisión respiratoria programada", status: "waiting", time: "14:30", allergies: [], conditions: ["Asma (dato simulado)"], doctor: "Dr. Samuel Ortiz", color: "amber" },
-  { id: "MN-CO-2098", name: "Daniela Gil", initials: "DG", age: 46, city: "Sabaneta", department: "Antioquia", blood: "O+", specialty: "Endocrinología", reason: "Control endocrino de seguimiento", status: "ready", time: "15:00", allergies: [], conditions: ["Hipotiroidismo (dato simulado)"], doctor: "Dra. Paula Mejía", color: "violet" },
+  { id: "MN-CO-2098", name: "Daniela Gil", initials: "DG", age: 46, city: "Sabaneta", department: "Antioquia", blood: "O+", specialty: "Endocrinología", reason: "Control endocrino de seguimiento", status: "ready", time: "15:00", allergies: [], conditions: ["Hipotiroidismo (dato simulado)"], doctor: "Dra. Andrea Salazar", color: "violet" },
 ];
 
 export const inventory: InventoryItem[] = [
@@ -32,19 +32,20 @@ export const inventory: InventoryItem[] = [
 ];
 
 export const clinicians: Clinician[] = [
-  { name: "Valentina Ríos", title: "Cardiología", initials: "VR", experience: "12 años · ecocardiografía y prevención cardiovascular", status: "available", department: "Centro cardiovascular", shift: "Mañana", color: "violet", portrait: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=160&h=160&q=80" },
-  { name: "Mateo Vélez", title: "Ortopedia y trauma", initials: "MV", experience: "9 años · cirugía articular y rehabilitación", status: "surgery", department: "Unidad quirúrgica", shift: "Mañana", color: "blue", portrait: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=160&h=160&q=80" },
-  { name: "Camila Luna", title: "Neurología", initials: "CL", experience: "14 años · neurofisiología clínica", status: "available", department: "Neurociencias", shift: "Tarde", color: "green", portrait: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=160&h=160&q=80" },
-  { name: "Samuel Ortiz", title: "Medicina interna", initials: "SO", experience: "8 años · cuidado de condiciones crónicas", status: "consult", department: "Clínica central", shift: "Mañana", color: "amber", portrait: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=160&h=160&q=80" },
-  { name: "Isabella Cruz", title: "Dermatología", initials: "IC", experience: "7 años · dermatología clínica", status: "available", department: "Consulta externa", shift: "Tarde", color: "pink", portrait: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=160&h=160&q=80" },
-  { name: "Paula Mejía", title: "Pediatría y endocrinología", initials: "PM", experience: "11 años · atención integral infantil", status: "available", department: "Unidad materno infantil", shift: "Mañana", color: "cyan", portrait: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=160&h=160&q=80" },
+  { name: "José Daniel Pabón Villanueva", title: "Medicina general · Coordinación clínica", initials: "JP", experience: "Trayectoria por verificar · perfil principal de demostración", status: "available", department: "Coordinación médica", shift: "Mañana", color: "blue", portrait: "/jose-daniel-profile.jpg", credentials: ["Registro profesional pendiente de verificación", "Seguridad del paciente · referencia educativa de demo", "RCP avanzado · ejemplo no verificado"], research: "Línea ilustrativa de interés: coordinación clínica y seguridad del paciente.", demoCaseCount: 126 },
+  { name: "Valentina Ríos", title: "Cardiología", initials: "VR", experience: "12 años · ecocardiografía y prevención cardiovascular (dato ficticio)", status: "available", department: "Centro cardiovascular", shift: "Mañana", color: "violet", portrait: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=160&h=160&q=80", credentials: ["Ecocardiografía · referencia de perfil demo", "Seguridad del paciente · referencia educativa", "Certificaciones profesionales no verificadas"], research: "Área ilustrativa: prevención cardiovascular y ecocardiografía.", demoCaseCount: 94 },
+  { name: "Mateo Vélez", title: "Ortopedia y trauma", initials: "MV", experience: "9 años · cirugía articular y rehabilitación (dato ficticio)", status: "surgery", department: "Unidad quirúrgica", shift: "Mañana", color: "blue", portrait: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=160&h=160&q=80", credentials: ["Cirugía articular · referencia demo", "Rehabilitación musculoesquelética · referencia demo"], research: "Área ilustrativa: recuperación funcional y lesiones articulares.", demoCaseCount: 71 },
+  { name: "Laura Vélez", title: "Neurología", initials: "LV", experience: "14 años · neurofisiología clínica (dato ficticio)", status: "available", department: "Neurociencias", shift: "Tarde", color: "green", portrait: "", credentials: ["Neurofisiología clínica · referencia demo", "Certificaciones profesionales no verificadas"], research: "Área ilustrativa: neurofisiología clínica y enfermedades del movimiento.", demoCaseCount: 88 },
+  { name: "Samuel Ortiz", title: "Medicina interna", initials: "SO", experience: "8 años · cuidado de condiciones crónicas (dato ficticio)", status: "consult", department: "Clínica central", shift: "Mañana", color: "amber", portrait: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=160&h=160&q=80", credentials: ["Atención de condiciones crónicas · referencia demo", "Certificaciones profesionales no verificadas"], research: "Área ilustrativa: continuidad del cuidado y multimorbilidad.", demoCaseCount: 63 },
+  { name: "Isabella Cruz", title: "Dermatología", initials: "IC", experience: "7 años · dermatología clínica (dato ficticio)", status: "available", department: "Consulta externa", shift: "Tarde", color: "pink", portrait: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=160&h=160&q=80", credentials: ["Dermatología clínica · referencia demo", "Certificaciones profesionales no verificadas"], research: "Área ilustrativa: dermatosis inflamatorias y prevención.", demoCaseCount: 57 },
+  { name: "Andrea Salazar", title: "Pediatría y endocrinología", initials: "AS", experience: "11 años · atención integral infantil (dato ficticio)", status: "available", department: "Unidad materno infantil", shift: "Mañana", color: "cyan", portrait: "", credentials: ["Atención pediátrica · referencia demo", "Certificaciones profesionales no verificadas"], research: "Área ilustrativa: crecimiento y prevención en salud infantil.", demoCaseCount: 76 },
   { name: "Felipe Arango", title: "Medicina familiar", initials: "FA", experience: "15 años · atención primaria y familiar", status: "consult", department: "Clínica central", shift: "Tarde", color: "rose", portrait: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&h=160&q=80" },
   { name: "Natalia Parra", title: "Oftalmología", initials: "NP", experience: "10 años · segmento anterior y prevención visual", status: "available", department: "Consulta externa", shift: "Tarde", color: "blue", portrait: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&h=160&q=80" },
 ];
 
 export const projectCollaborators: ProjectCollaborator[] = [
-  { name: "Camilo Jaramillo", initials: "CJ", title: "Especialista en Infraestructura y Redes", department: "Operaciones tecnológicas", role: "Administrador de red · demo", color: "blue", permissions: ["Supervisión de nodos", "Gestión de incidentes", "Lectura de telemetría"], activity: { reviews: 18, tasks: 12, availability: "available" } },
-  { name: "Yuliana Pérez", initials: "YP", title: "Especialista en Datos y Validación Clínica", department: "Calidad y datos", role: "Validadora de datos · demo", color: "violet", permissions: ["Validación de fixtures", "Revisión de calidad", "Lectura de auditoría"], activity: { reviews: 24, tasks: 9, availability: "busy" } },
+  { name: "Camilo Jaramillo", initials: "CJ", portrait: "/camilo-jaramillo-profile.png", title: "Médico · Especialista en Infraestructura y Redes", department: "Operaciones tecnológicas", role: "Administrador de red · demo", color: "blue", permissions: ["Supervisión de nodos", "Gestión de incidentes", "Lectura de telemetría"], activity: { reviews: 18, tasks: 12, availability: "available" } },
+  { name: "José Daniel Pabón Villanueva", initials: "JP", portrait: "/jose-daniel-profile.jpg", title: "Administrador · Seguridad clínica", department: "Seguridad institucional", role: "Administrador de plataforma · demo", color: "blue", permissions: ["Control de seguridad clínica", "Gestión de usuarios y roles", "Auditoría y configuración de la demo"], activity: { reviews: 31, tasks: 26, availability: "available" } },
 ];
 
 const patientStudyBySpecialty: Record<string, { title: string; bodyArea: string; model: PatientClinicalDetail["studies"][number]["model"]; summary: string }> = {
@@ -63,6 +64,13 @@ const patientStudyBySpecialty: Record<string, { title: string; bodyArea: string;
 
 export const patientClinicalDetails: Record<string, PatientClinicalDetail> = Object.fromEntries(patients.map((patient, index) => {
   const study = patientStudyBySpecialty[patient.specialty] || patientStudyBySpecialty["Medicina interna"];
+  const studyCatalog: PatientClinicalDetail["studies"] = [
+    { date: "2026-10-22", title: "Radiografía sintética · lesión articular", bodyArea: "Articulación · caso educativo", model: "bone", summary: "Caso compuesto de demostración para explorar anatomía articular; no representa hallazgos de una persona." },
+    { date: "2026-10-14", title: "Imagen pulmonar sintética · patrón ilustrativo", bodyArea: "Tórax · caso educativo", model: "pneumonia", summary: "Esquema pulmonar ilustrativo. No permite identificar una enfermedad ni sustituye la lectura radiológica." },
+    { date: "2026-09-30", title: "Radiografía sintética · fractura compleja", bodyArea: "Extremidad · caso educativo", model: "fracture", summary: "Modelo visual de fractura para capacitación. No es una radiografía clínica ni una recomendación terapéutica." },
+    { date: "2026-09-12", title: "Esquema respiratorio · variación pulmonar", bodyArea: "Tórax · caso educativo", model: "lung", summary: "Ilustración anatómica sintética para ampliar la variedad visual de la ficha." },
+    { date: "2026-08-27", title: "Modelo de estructura ósea · articulación", bodyArea: "Sistema musculoesquelético · caso educativo", model: "osteoporosis", summary: "Modelo anatómico de demostración sin datos clínicos, mediciones ni interpretación diagnóstica." },
+  ];
   const heartRate = 68 + ((index * 7) % 17);
   const systolic = 108 + ((index * 5) % 20);
   const diastolic = 68 + ((index * 3) % 14);
@@ -78,7 +86,15 @@ export const patientClinicalDetails: Record<string, PatientClinicalDetail> = Obj
       { date: "2026-10-22", bloodPressure: `${systolic - 2}/${diastolic} mmHg`, heartRate: `${heartRate + 2} lpm`, temperature: "36.6 °C", oxygenSaturation: "97%" },
       { date: "2026-09-30", bloodPressure: `${systolic + 1}/${diastolic + 1} mmHg`, heartRate: `${heartRate - 1} lpm`, temperature: "36.5 °C", oxygenSaturation: "98%" },
     ],
-    studies: [{ date: "2026-11-08", ...study }],
+    studies: [
+      { date: "2026-11-08", ...study },
+      studyCatalog[index % studyCatalog.length],
+      studyCatalog[(index + 2) % studyCatalog.length],
+    ],
+    activeTreatments: [
+      "Seguimiento de cuidado no farmacológico · fixture de demostración",
+      "Reconciliación terapéutica pendiente de revisión profesional · dato ficticio",
+    ],
     activePlan: ["Seguimiento y plan de cuidado: dato de demostración sin orden médica.", "Validar cualquier información con el equipo tratante antes de tomar decisiones."],
     audit: [
       { date: "2026-11-08 09:42", action: "Consulta de expediente", actor: patient.doctor, result: "Acceso simulado autorizado" },
@@ -88,9 +104,11 @@ export const patientClinicalDetails: Record<string, PatientClinicalDetail> = Obj
 })) as Record<string, PatientClinicalDetail>;
 
 export const medellinFacilities: HospitalFacility[] = [
-  { id: "hptu", name: "Hospital Pablo Tobón Uribe", address: "Calle 78B No. 69–240, Robledo, Medellín", phone: "+57 604 445 9000", mapsQuery: "Hospital Pablo Tobón Uribe, Medellín", officialUrl: "https://hptu.org/pages/contacto" },
-  { id: "las-americas", name: "Clínica Las Américas Auna", address: "Diagonal 75B No. 2A–80/140, Medellín", phone: "+57 604 342 1010", mapsQuery: "Clínica Las Américas Auna, Medellín", officialUrl: "https://www.lasamericas.com.co/es-es/Institucional/Cont%C3%A1ctenos" },
-  { id: "san-vicente", name: "Hospital San Vicente Fundación · Medellín", address: "Medellín, Antioquia", phone: "+57 604 444 1333", mapsQuery: "Hospital San Vicente Fundación Medellín", officialUrl: "https://hospitalmedellin.sanvicentefundacion.com/contactanos" },
+  { id: "hptu", name: "Hospital Pablo Tobón Uribe", address: "Calle 78B No. 69–240, Robledo, Medellín", phone: "+57 604 445 9000", mapsQuery: "Hospital Pablo Tobón Uribe, Medellín", officialUrl: "https://hptu.org/pages/contacto", coordinates: { lat: 6.2763, lng: -75.5902 } },
+  { id: "las-americas", name: "Clínica Las Américas Auna · sede 80", address: "Diagonal 75B No. 2A–80/140, Medellín", phone: "+57 604 342 1010", mapsQuery: "Clínica Las Américas Auna sede 80, Medellín", officialUrl: "https://www.lasamericas.com.co/nuestras-empresas/clinica-las-americas", coordinates: { lat: 6.2228, lng: -75.5964 } },
+  { id: "san-vicente", name: "Hospital San Vicente Fundación · Medellín", address: "Calle 64 No. 51D–154, Medellín", phone: "+57 604 444 1333", mapsQuery: "Hospital San Vicente Fundación Medellín", officialUrl: "https://hospitalmedellin.sanvicentefundacion.com/contactanos", coordinates: { lat: 6.2697, lng: -75.5636 } },
+  { id: "hospital-general", name: "Hospital General de Medellín", address: "Carrera 48 No. 32–102, Medellín", phone: "+57 604 384 7300", mapsQuery: "Hospital General de Medellín", officialUrl: "https://www.hgm.gov.co/tramites/2/pqrsdf/", coordinates: { lat: 6.2355, lng: -75.5683 } },
+  { id: "el-rosario", name: "Clínica El Rosario · sede Tesoro", address: "Carrera 20 No. 2 Sur–185, Medellín", phone: "+57 604 326 9100", mapsQuery: "Clínica El Rosario sede Tesoro Medellín", officialUrl: "https://www.clinicaelrosario.com/la-clinica/nuestra-ubicacion/", coordinates: { lat: 6.1976, lng: -75.5594 } },
 ];
 
 export const appointments = [
@@ -109,11 +127,11 @@ export const appointments = [
 
 export const rooms = [
   { date: "2026-11-03", name: "Quirófano 02", type: "Cirugía programada · demo", status: "Ocupado", time: "07:00–11:00", clinician: "Equipo de ortopedia", capacity: "Equipo clínico" },
-  { date: "2026-11-04", name: "Consultorio 212", type: "Neurología", status: "Ocupado", time: "08:00–09:00", clinician: "Dra. Camila Luna", capacity: "1 paciente" },
+  { date: "2026-11-04", name: "Consultorio 212", type: "Neurología", status: "Ocupado", time: "08:00–09:00", clinician: "Dra. Laura Vélez", capacity: "1 paciente" },
   { date: "2026-11-05", name: "Consultorio 204", type: "Consulta externa", status: "Ocupado", time: "08:30–09:30", clinician: "Dra. Valentina Ríos", capacity: "1 paciente" },
   { date: "2026-11-05", name: "Consultorio 208", type: "Ortopedia", status: "Ocupado", time: "09:00–10:00", clinician: "Dr. Mateo Vélez", capacity: "1 paciente" },
   { date: "2026-11-05", name: "Quirófano 02", type: "Cirugía programada", status: "Ocupado", time: "07:00–12:00", clinician: "Equipo de ortopedia", capacity: "Equipo clínico" },
-  { date: "2026-11-05", name: "Consultorio 212", type: "Neurología", status: "Disponible", time: "10:00–13:00", clinician: "Dra. Camila Luna", capacity: "1 paciente" },
+  { date: "2026-11-05", name: "Consultorio 212", type: "Neurología", status: "Disponible", time: "10:00–13:00", clinician: "Dra. Laura Vélez", capacity: "1 paciente" },
   { date: "2026-11-05", name: "Sala de procedimientos 01", type: "Procedimientos", status: "Disponible", time: "12:00–16:00", clinician: "Asignación pendiente", capacity: "4 puestos" },
   { date: "2026-11-09", name: "Consultorio 204", type: "Cardiología", status: "Ocupado", time: "08:15–09:00", clinician: "Dra. Valentina Ríos", capacity: "1 paciente" },
   { date: "2026-11-10", name: "Consultorio 206", type: "Medicina interna", status: "Ocupado", time: "09:00–10:00", clinician: "Dr. Samuel Ortiz", capacity: "1 paciente" },

@@ -9,7 +9,7 @@ import {
   ChevronDown, CircleHelp, Clock3, FileCheck2, LockKeyhole, MapPin, Mic, Network,
   PackageCheck, Rotate3D, ShieldCheck, Stethoscope, Wifi, X, ClipboardList, Users, Package, Volume2,
 } from "lucide-react";
-import type { Locale, Section } from "@/types/clinical";
+import type { Clinician, InventoryItem, Locale, Section } from "@/types/clinical";
 import type { NetworkNodeId } from "@/components/NetworkTopology";
 
 const NetworkTopology = dynamic(() => import("@/components/NetworkTopology"), {
@@ -30,7 +30,7 @@ const copy = {
     pharmacyMeta: "Servicios de inventario", topology: "Topología de red hospitalaria",
     topologySub: "Selecciona un nodo o arrastra para explorar la red.",
     rotate: "Rotar", zoom: "Acercar", selected: "Nodo seleccionado", demoNode: "Estado de demostración",
-    voiceTitle: "Asistente de voz clínico", voiceSub: "Dicta un reporte de infraestructura o escribe una consulta de orientación.",
+    voiceTitle: "Asistente de voz clínico", voiceSub: "Navega por el sistema y consulta equipo o existencias por voz o texto.",
     start: "Activar micrófono", stop: "Detener escucha", idle: "Listo para escuchar o recibir un reporte escrito",
     listening: "Escuchando desde este dispositivo…", response: "Respuesta de demostración",
     userLine: "Quiero reportar una interrupción en una estación de monitoreo.",
@@ -73,7 +73,7 @@ const copy = {
     monitoringMeta: "Device segment", pharmacy: "Pharmacy servers", pharmacyMeta: "Inventory services",
     topology: "Hospital network topology", topologySub: "Select a node or drag to explore the network.",
     rotate: "Rotate", zoom: "Zoom", selected: "Selected node", demoNode: "Demonstration status",
-    voiceTitle: "Clinical voice assistant", voiceSub: "Dictate an infrastructure report or type a guidance question.",
+    voiceTitle: "Clinical voice assistant", voiceSub: "Navigate the workspace and ask about the care team or inventory by voice or text.",
     start: "Enable microphone", stop: "Stop listening", idle: "Ready for speech or a written report",
     listening: "Listening on this device…", response: "Demonstration response",
     userLine: "I want to report an outage at a monitoring station.",
@@ -110,6 +110,7 @@ const copy = {
 type AuditSeverity = "high" | "medium" | "info";
 type AuditSystem = "monitoring" | "pharmacy" | "ehr";
 type AuditStatus = "pendingReview" | "open" | "recorded" | "eventReviewed";
+type SecurityDemoEvent = { id: string; time: string; title: string; detail: string; severity: "info" | "warning" };
 
 const auditEvents: {
   id: string;
@@ -162,12 +163,14 @@ const nodeMeta: Record<NetworkNodeId, { es: string; en: string; status: "safe" |
   database: { es: "Base de datos clínica", en: "Clinical database", status: "safe", metrics: { es: ["Carga de almacenamiento · 61%", "Réplicas · 2 de 2"], en: ["Storage load · 61%", "Replicas · 2 of 2"] } },
 };
 
-export default function ClinicalSafetyDashboard({ locale, environment, lowStockCount, onNavigate, triageSummary }: {
+export default function ClinicalSafetyDashboard({ locale, environment, lowStockCount, onNavigate, triageSummary, clinicians, inventory }: {
   locale: Locale;
   environment: string;
   lowStockCount: number;
   onNavigate: (section: Section) => void;
   triageSummary?: string;
+  clinicians: Clinician[];
+  inventory: InventoryItem[];
 }) {
   const t = copy[locale];
   const [selectedNode, setSelectedNode] = useState<NetworkNodeId>("monitoring");
@@ -176,7 +179,6 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
   const [draft, setDraft] = useState("");
   const [assistantMessage, setAssistantMessage] = useState("");
   const [voiceError, setVoiceError] = useState("");
-  const [voiceAction, setVoiceAction] = useState<{ label: string; section: Section } | null>(null);
   const [permissionPending, setPermissionPending] = useState(false);
   const [available, setAvailable] = useState(true);
   const [localTime, setLocalTime] = useState("");
@@ -187,12 +189,19 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
   const waveformRef = useRef<HTMLDivElement>(null);
   const mountedRef = useRef(true);
   const startAttemptRef = useRef(0);
+  const voiceSilenceTimerRef = useRef<number | null>(null);
   const [reviewed, setReviewed] = useState<string[]>([]);
   const [auditDate, setAuditDate] = useState("2026-11-09");
   const [auditSystem, setAuditSystem] = useState("all");
   const [auditSeverity, setAuditSeverity] = useState("all");
   const [expandedAuditEvent, setExpandedAuditEvent] = useState<string | null>(null);
   const [reviewedAuditEvents, setReviewedAuditEvents] = useState<string[]>([]);
+  const [scanProgress, setScanProgress] = useState(0);
+  const [scanState, setScanState] = useState<"idle" | "running" | "complete">("idle");
+  const [integrityVerified, setIntegrityVerified] = useState(false);
+  const [demoIpBlocked, setDemoIpBlocked] = useState(false);
+  const [securityDemoEvents, setSecurityDemoEvents] = useState<SecurityDemoEvent[]>([]);
+  const simulationIntervalRef = useRef<number | null>(null);
   const selected = nodeMeta[selectedNode];
   const systemLabels: Record<AuditSystem, string> = {
     monitoring: t.monitoringSystem,
@@ -209,7 +218,6 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
     setAssistantMessage(locale === "es"
       ? "Resumen de demostración preparado para revisión por un profesional. No es un diagnóstico ni una clasificación clínica."
       : "Demo summary prepared for professional review. This is not a diagnosis or clinical classification.");
-    setVoiceAction(null);
     setVoiceState("response");
   }, [triageSummary, locale]);
 
@@ -221,6 +229,8 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
   }, [locale]);
 
   const releaseAudio = useCallback(() => {
+    if (voiceSilenceTimerRef.current !== null) window.clearTimeout(voiceSilenceTimerRef.current);
+    voiceSilenceTimerRef.current = null;
     if (animationRef.current !== null) window.cancelAnimationFrame(animationRef.current);
     animationRef.current = null;
     recognizerRef.current?.stop();
@@ -239,8 +249,54 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
       mountedRef.current = false;
       startAttemptRef.current += 1;
       releaseAudio();
+      if (simulationIntervalRef.current !== null) window.clearInterval(simulationIntervalRef.current);
     };
   }, [releaseAudio]);
+
+  function logSecurityDemoEvent(title: string, detail: string, severity: SecurityDemoEvent["severity"] = "info") {
+    const time = new Intl.DateTimeFormat(locale === "es" ? "es-CO" : "en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" }).format(new Date());
+    setSecurityDemoEvents((events) => [{ id: `sec-${Date.now()}`, time, title, detail, severity }, ...events].slice(0, 4));
+  }
+
+  function startSecurityScan() {
+    if (scanState === "running") return;
+    setScanProgress(0);
+    setScanState("running");
+    let step = 0;
+    simulationIntervalRef.current = window.setInterval(() => {
+      step += 1;
+      const progress = Math.min(100, step * 20);
+      setScanProgress(progress);
+      if (progress === 100) {
+        if (simulationIntervalRef.current !== null) window.clearInterval(simulationIntervalRef.current);
+        simulationIntervalRef.current = null;
+        setScanState("complete");
+        logSecurityDemoEvent(
+          locale === "es" ? "Escaneo de nodos completado" : "Node scan completed",
+          locale === "es" ? "10 nodos de demostración consultados · 2 requieren revisión manual." : "10 demo nodes checked · 2 need manual review.",
+          "warning",
+        );
+      }
+    }, 300);
+  }
+
+  function validateDemoIntegrity() {
+    setIntegrityVerified(true);
+    logSecurityDemoEvent(
+      locale === "es" ? "Integridad de servidores validada" : "Server integrity validated",
+      locale === "es" ? "Validación ficticia de 4/4 manifiestos · sin cambios en servidores reales." : "Fictional check of 4/4 manifests · no real servers changed.",
+    );
+  }
+
+  function blockDemoIp() {
+    if (demoIpBlocked) return;
+    setDemoIpBlocked(true);
+    logSecurityDemoEvent(
+      locale === "es" ? "IP de prueba bloqueada" : "Test IP blocked",
+      locale === "es" ? "198.51.100.42 · bloqueo local simulado; no se modificó ningún firewall." : "198.51.100.42 · local block simulation; no firewall was changed.",
+      "warning",
+    );
+  }
 
   function composeResponse(message: string) {
     const normalized = message.toLocaleLowerCase();
@@ -248,20 +304,41 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
     if (isUrgent) return locale === "es"
       ? "No puedo evaluar ni atender una urgencia. Si esto describe una situación real, llama al 123 en Medellín o a los servicios locales y busca atención inmediata. Esta demo no contacta emergencias."
       : "I cannot assess or handle an emergency. If this describes a real situation, call local emergency services and seek immediate care. This demo does not contact emergency services.";
+    const asksForClinicians = /qu[ií]en|qui[eé]nes|cu[aá]l|cu[aá]les|disponible|disponibles|m[eé]dicos|doctores|especialistas|care team|who is|who are|available clinician|doctors/.test(normalized);
+    const asksForInventory = /qu[eé]|cu[aá]nt|disponible|disponibles|stock|existencias|inventario|insumo|medicamento|farmacia|inventory|suppl(y|ies)|medicine|minimum|below/.test(normalized);
+    const requestsNavigation = /abre|abrir|ir a|ve a|lleva|navega|secci[oó]n|open|go to|navigate|take me/.test(normalized);
+    if (!requestsNavigation && /equipo|m[eé]dico|doctor|especialista|staff|clinician/.test(normalized) && asksForClinicians) {
+      const availableClinicians = clinicians.filter((person) => person.status === "available");
+      const names = (availableClinicians.length ? availableClinicians : clinicians).slice(0, 5).map((person) => `${person.name} · ${person.title}`).join("; ");
+      return locale === "es"
+        ? `Equipo disponible en esta demo: ${names}. Los estados y perfiles son ficticios; abre Equipo médico para consultar las fichas.`
+        : `Available in this demo: ${names}. Statuses and profiles are fictional; open Care team to view the profiles.`;
+    }
+    if (!requestsNavigation && asksForInventory) {
+      const criticalItems = inventory.filter((item) => item.stock <= item.threshold);
+      const isAskingCritical = /cr[ií]tic|bajo m[ií]nimo|low stock|critical|below minimum|below/.test(normalized);
+      const summary = isAskingCritical
+        ? criticalItems.map((item) => `${item.name} (${item.stock} ${item.unit})`).join("; ") || (locale === "es" ? "ninguna referencia bajo el mínimo" : "no items below minimum")
+        : inventory.slice(0, 5).map((item) => `${item.name} (${item.stock} ${item.unit})`).join("; ");
+      return locale === "es"
+        ? `${inventory.length} referencias ficticias en inventario. ${criticalItems.length} están bajo el mínimo. ${isAskingCritical ? `Revisión: ${summary}.` : `Muestra: ${summary}.`}`
+        : `${inventory.length} fictional inventory references. ${criticalItems.length} are below minimum. ${isAskingCritical ? `Review: ${summary}.` : `Sample: ${summary}.`}`;
+    }
     const actions: Array<{ pattern: RegExp; section: Section; labelEs: string; labelEn: string }> = [
+      { pattern: /inicio|resumen|seguridad cl[ií]nica|dashboard|home|overview/, section: "overview", labelEs: "Abrir seguridad clínica", labelEn: "Open clinical safety" },
       { pattern: /triage|triaje|consulta virtual|symptom|s[ií]ntoma/, section: "triage", labelEs: "Abrir guía de consulta", labelEn: "Open intake guide" },
       { pattern: /agenda|cita|turno|calendar|appointment/, section: "schedule", labelEs: "Abrir agenda", labelEn: "Open schedule" },
       { pattern: /hospital|mapa|ubicaci[oó]n|hospital network/, section: "locations", labelEs: "Abrir red hospitalaria", labelEn: "Open hospital network" },
-      { pattern: /inventario|farmacia|insumo|inventory|pharmacy/, section: "inventory", labelEs: "Abrir inventario", labelEn: "Open inventory" },
       { pattern: /paciente|expediente|patients|record/, section: "patients", labelEs: "Abrir pacientes", labelEn: "Open patients" },
       { pattern: /equipo|profesional|m[eé]dico|staff|clinician/, section: "team", labelEs: "Abrir equipo", labelEn: "Open team" },
+      { pattern: /inventario|farmacia|insumo|inventory|pharmacy/, section: "inventory", labelEs: "Abrir inventario", labelEn: "Open inventory" },
     ];
     const action = actions.find((item) => item.pattern.test(normalized));
     if (action) {
-      setVoiceAction({ section: action.section, label: locale === "es" ? action.labelEs : action.labelEn });
+      onNavigate(action.section);
       return locale === "es"
-        ? `Entendido. Puedo abrir ${action.labelEs.toLocaleLowerCase()} para continuar en esta demostración.`
-        : `Understood. I can open ${action.labelEn.toLocaleLowerCase()} to continue in this demo.`;
+        ? `Entendido. Abriendo ${action.labelEs.toLocaleLowerCase()} en esta demostración.`
+        : `Understood. Opening ${action.labelEn.toLocaleLowerCase()} in this demo.`;
     }
     if (/dolor|fiebre|mareo|pain|fever|dizz/.test(normalized)) return locale === "es"
       ? "Puedo preparar un resumen de lo que escribas, pero no hago triage ni doy diagnósticos. Usa la guía de consulta para organizar los datos y compártelos con un profesional."
@@ -271,14 +348,20 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
       : "Demo incident received. Note the affected system, location and time, then report it through your organization’s IT channel. Nothing was sent or stored outside this screen.";
   }
 
-  function respondTo(message: string) {
+  function respondTo(message: string, speak = false) {
     const value = message.trim();
     if (!value) return;
     setTranscript(value);
-    setAssistantMessage(composeResponse(value));
+    const response = composeResponse(value);
+    setAssistantMessage(response);
     setVoiceError("");
     releaseAudio();
     setVoiceState("response");
+    if (speak && "speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(response);
+      utterance.lang = locale === "es" ? "es-CO" : "en-US";
+      window.speechSynthesis.speak(utterance);
+    }
   }
 
   async function startVoice() {
@@ -326,14 +409,20 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
         recognizer.continuous = true;
         recognizer.interimResults = true;
         recognizer.onresult = (event) => {
-          let current = "";
-          
+          const transcriptParts: string[] = [];
+          let containsFinalResult = false;
           for (let index = 0; index < event.results.length; index += 1) {
             const result = event.results[index];
             const phrase = result[0]?.transcript || "";
-            current += phrase;
+            if (phrase) transcriptParts.push(phrase);
+            containsFinalResult ||= result.isFinal;
           }
+          const current = transcriptParts.join(" ").trim();
           setTranscript(current.trim());
+          if (current) {
+            if (voiceSilenceTimerRef.current !== null) window.clearTimeout(voiceSilenceTimerRef.current);
+            voiceSilenceTimerRef.current = window.setTimeout(() => respondTo(current, true), containsFinalResult ? 1100 : 1500);
+          }
         };
         recognizer.onerror = () => {
           releaseAudio();
@@ -356,7 +445,7 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
   }
 
   function stopVoice() {
-    if (transcript.trim()) respondTo(transcript);
+    if (transcript.trim()) respondTo(transcript, true);
     else {
       releaseAudio();
       setVoiceState("idle");
@@ -391,7 +480,7 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
 
     <section className="clinician-credential-card">
       <div className="clinician-credential-portrait"><Image src="/jose-daniel-profile.jpg" alt="José Daniel Pabón Villanueva" width={92} height={110} priority /><span className={available ? "credential-online" : "credential-away"}><i />{available ? (locale === "es" ? "Disponible" : "Available") : (locale === "es" ? "No disponible" : "Unavailable")}</span></div>
-      <div className="clinician-credential-main"><span className="credential-eyebrow"><ShieldCheck size={13} />{locale === "es" ? "PERFIL DE SUPERVISIÓN" : "SUPERVISOR PROFILE"}</span><h2>José Daniel Pabón Villanueva</h2><p>{locale === "es" ? "Ingeniería · Seguridad clínica y hospitalaria" : "Engineering · Clinical and hospital safety"}</p><div className="credential-tags"><span>{locale === "es" ? "Ingeniería clínica" : "Clinical engineering"}</span><span>{locale === "es" ? "Ciberseguridad hospitalaria" : "Hospital cybersecurity"}</span><span><Clock3 size={12} />{locale === "es" ? "Demo local" : "Local demo"} · {localTime || "--:--"}</span></div></div>
+      <div className="clinician-credential-main"><span className="credential-eyebrow"><ShieldCheck size={13} />{locale === "es" ? "ADMINISTRADOR DE SEGURIDAD" : "SECURITY ADMINISTRATOR"}</span><h2>José Daniel Pabón Villanueva</h2><p>{locale === "es" ? "Administrador · Seguridad clínica" : "Administrator · Clinical safety"}</p><div className="credential-tags"><span>{locale === "es" ? "Control de acceso" : "Access control"}</span><span>{locale === "es" ? "Auditoría y defensa" : "Audit and defense"}</span><span><Clock3 size={12} />{locale === "es" ? "Demo local" : "Local demo"} · {localTime || "--:--"}</span></div></div>
       <div className="credential-actions"><button className="credential-availability" onClick={() => setAvailable((value) => !value)}><span className={available ? "availability-switch on" : "availability-switch"}><i /></span>{locale === "es" ? "Disponibilidad · demo" : "Availability · demo"}</button><div><button onClick={() => onNavigate("team")}><Users size={14} />{locale === "es" ? "Equipo" : "Team"}</button><button onClick={() => onNavigate("patients")}><ClipboardList size={14} />{locale === "es" ? "Pacientes" : "Patients"}</button><button onClick={() => onNavigate("locations")}><MapPin size={14} />{locale === "es" ? "Red hospitalaria" : "Hospital network"}</button><button onClick={() => onNavigate("inventory")}><Package size={14} />{locale === "es" ? "Inventario" : "Inventory"}</button></div></div>
     </section>
 
@@ -402,6 +491,23 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
       <div className="safety-strip-item safety-strip-warning"><CircleHelp size={16} /><span><b>02</b> {t.review}</span></div>
       <div className="safety-current-environment"><span>{environment}</span></div>
     </div>
+
+    <section className="safety-panel security-simulation-panel">
+      <div className="safety-section-heading"><div><h2>{locale === "es" ? "Simulación de defensa hospitalaria" : "Hospital defense simulation"}</h2><p>{locale === "es" ? "Controles locales de demostración · no se conectan a servidores ni firewalls." : "Local demo controls · no servers or firewalls are contacted."}</p></div><span className="security-sim-badge"><ShieldCheck size={13} />{locale === "es" ? "Solo simulación" : "Simulation only"}</span></div>
+      <div className="security-sim-grid">
+        <article className="security-sim-card">
+          <span className="security-sim-icon cyan"><Network size={17} /></span><div><b>{locale === "es" ? "Escaneo de nodos" : "Node scan"}</b><small>{scanState === "running" ? (locale === "es" ? `Consultando nodos · ${Math.round(scanProgress / 10)}/10` : `Checking nodes · ${Math.round(scanProgress / 10)}/10`) : scanState === "complete" ? (locale === "es" ? "Escaneo completado · 10 nodos" : "Scan complete · 10 nodes") : (locale === "es" ? "10 servicios de infraestructura" : "10 infrastructure services")}</small></div><button type="button" disabled={scanState === "running"} onClick={startSecurityScan}>{scanState === "running" ? (locale === "es" ? "Escaneando…" : "Scanning…") : (locale === "es" ? "Iniciar escaneo" : "Start scan")}</button>
+          <div className="security-sim-progress" role="progressbar" aria-label={locale === "es" ? "Progreso del escaneo simulado" : "Demo scan progress"} aria-valuemin={0} aria-valuemax={100} aria-valuenow={scanProgress}><i style={{ width: `${scanProgress}%` }} /></div>
+        </article>
+        <article className="security-sim-card">
+          <span className="security-sim-icon green"><CheckCircle2 size={17} /></span><div><b>{locale === "es" ? "Integridad de servidores" : "Server integrity"}</b><small>{integrityVerified ? (locale === "es" ? "Manifiestos demo · 4 de 4 íntegros" : "Demo manifests · 4 of 4 intact") : (locale === "es" ? "Validación ficticia de manifiestos" : "Fictional manifest validation")}</small></div><button type="button" onClick={validateDemoIntegrity}>{integrityVerified ? (locale === "es" ? "Volver a validar" : "Validate again") : (locale === "es" ? "Validar" : "Validate")}</button>
+        </article>
+        <article className="security-sim-card">
+          <span className="security-sim-icon amber"><ShieldCheck size={17} /></span><div><b>{locale === "es" ? "IP sospechosa · demo" : "Suspicious IP · demo"}</b><small>{demoIpBlocked ? (locale === "es" ? "198.51.100.42 · bloqueada en la simulación" : "198.51.100.42 · blocked in simulation") : (locale === "es" ? "198.51.100.42 · dirección reservada de prueba" : "198.51.100.42 · reserved test address")}</small></div><button type="button" disabled={demoIpBlocked} onClick={blockDemoIp}>{demoIpBlocked ? (locale === "es" ? "Bloqueada" : "Blocked") : (locale === "es" ? "Simular bloqueo" : "Simulate block")}</button>
+        </article>
+      </div>
+      <div className="security-firewall-log"><div><span><Activity size={14} />{locale === "es" ? "Registro de firewall · demo" : "Firewall event log · demo"}</span><small>{locale === "es" ? "Últimos eventos locales" : "Latest local events"}</small></div>{securityDemoEvents.length ? securityDemoEvents.map((event) => <article key={event.id} className={event.severity}><time>{event.time}</time><b>{event.title}</b><small>{event.detail}</small></article>) : <article className="info"><time>--:--</time><b>{locale === "es" ? "Firewall de demostración preparado" : "Demo firewall ready"}</b><small>{locale === "es" ? "Las acciones aparecerán aquí y solo cambiarán el estado local de esta vista." : "Actions appear here and only change this view's local state."}</small></article>}</div>
+    </section>
 
     <section className="safety-estate-card">
       <div className="safety-section-heading"><div><h2>{t.estateTitle}</h2><p>{t.estateSub}</p></div><span className="safety-section-live"><i />DEMO</span></div>
@@ -424,22 +530,13 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
         <div className="safety-topology-content">
           <div className="safety-topology-visual" aria-label={t.topology}>
             <NetworkTopology selectedNode={selectedNode} onSelect={setSelectedNode} />
-            <div className="safety-scene-caption"><span><i className="safe-dot" />{t.active}</span><span><i className="review-dot" />{t.attention}</span></div>
           </div>
           <div className="safety-node-details">
-            <span className="safety-detail-label">{t.selected}</span>
-            <h3>{locale === "es" ? selected.es : selected.en}</h3>
-            <span className={"safety-node-status " + selected.status}><i />{selected.status === "safe" ? t.safeNode : t.reviewNode}</span>
-            <span className="safety-detail-label safety-metrics-label">{locale === "es" ? "Métricas de demostración" : "Demo metrics"}</span>
-            <div className="safety-node-metrics">{selected.metrics[locale].map((metric) => <span key={metric}><i />{metric}</span>)}</div>
-            <span className="safety-detail-divider" />
-            <span className="safety-detail-label">{t.demoNode}</span>
-            <div className="safety-node-list">
-              {(Object.keys(nodeMeta) as NetworkNodeId[]).map((id) => <button key={id} className={selectedNode === id ? "selected" : ""} onClick={() => setSelectedNode(id)}><span className={nodeMeta[id].status}><i /></span>{locale === "es" ? nodeMeta[id].es : nodeMeta[id].en}</button>)}
-            </div>
+            <div className="safety-node-summary"><span className="safety-detail-label">{t.selected}</span><h3>{locale === "es" ? selected.es : selected.en}</h3><span className={"safety-node-status " + selected.status}><i />{selected.status === "safe" ? t.safeNode : t.reviewNode}</span><span className="safety-detail-label safety-metrics-label">{locale === "es" ? "Métricas de demostración" : "Demo metrics"}</span><div className="safety-node-metrics">{selected.metrics[locale].map((metric) => <span key={metric}><i />{metric}</span>)}</div></div>
+            <div className="safety-node-navigation"><span className="safety-detail-label">{t.demoNode}</span><div className="safety-node-list">{(Object.keys(nodeMeta) as NetworkNodeId[]).map((id) => <button key={id} className={selectedNode === id ? "selected" : ""} onClick={() => setSelectedNode(id)}><span className={nodeMeta[id].status}><i /></span>{locale === "es" ? nodeMeta[id].es : nodeMeta[id].en}</button>)}</div></div>
           </div>
         </div>
-        <div className="safety-topology-footer"><span><Network size={14} />{t.rotate} · {t.zoom}</span><span>WebGL · 3D</span></div>
+        <div className="safety-topology-footer"><span className="safety-topology-legend"><i className="safe-dot" />{t.active}<i className="review-dot" />{t.attention}</span><span><Network size={14} />{t.rotate} · {t.zoom}</span><span>WebGL · 3D · {locale === "es" ? "flujo simulado" : "simulated flow"}</span></div>
       </section>
 
       <section className={"safety-panel safety-voice-panel " + (voiceState !== "idle" ? "voice-active" : "")}>
@@ -448,7 +545,7 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
           <div ref={waveformRef} className={"safety-wave " + (voiceState === "listening" ? "is-speaking" : "")} aria-hidden="true">{Array.from({ length: 29 }, (_, index) => <i key={index} style={{ "--bar": `${10 + ((index * 13) % 30)}px`, "--delay": `${(index % 9) * -0.11}s` } as CSSProperties & { "--bar": string; "--delay": string }} />)}</div>
           <span className="safety-voice-state">{voiceState === "idle" ? t.idle : voiceState === "listening" ? t.listening : t.response}</span>
         </div>
-        {voiceState === "response" ? <div className="safety-conversation"><div className="safety-user-message"><small>{locale === "es" ? "Transcripción" : "Transcript"}</small>{transcript}</div><div className="safety-assistant-message"><span><CheckCircle2 size={14} /></span>{assistantMessage}</div>{voiceAction && <button className="safety-voice-action" onClick={() => { onNavigate(voiceAction.section); setVoiceAction(null); }}><ArrowRight size={13} />{voiceAction.label}</button>}<button className="safety-speak-button" onClick={speakResponse}><Volume2 size={13} />{locale === "es" ? "Escuchar respuesta" : "Play response"}</button></div> : <div className="safety-voice-placeholder"><span>{voiceState === "listening" ? <Mic size={15} /> : <LockKeyhole size={15} />}</span>{voiceState === "listening" ? (transcript || t.noMic) : t.voiceNote}</div>}
+        {voiceState === "response" ? <div className="safety-conversation"><div className="safety-user-message"><small>{locale === "es" ? "Transcripción" : "Transcript"}</small>{transcript}</div><div className="safety-assistant-message"><span><CheckCircle2 size={14} /></span>{assistantMessage}</div><button className="safety-speak-button" onClick={speakResponse}><Volume2 size={13} />{locale === "es" ? "Repetir respuesta" : "Repeat response"}</button></div> : <div className="safety-voice-placeholder"><span>{voiceState === "listening" ? <Mic size={15} /> : <LockKeyhole size={15} />}</span>{voiceState === "listening" ? (transcript || t.noMic) : t.voiceNote}</div>}
         {voiceError && <p className="safety-voice-error" role="status">{voiceError}</p>}
         <div className="safety-voice-controls">
           <button className={"safety-call-button " + (voiceState === "listening" ? "active" : "")} disabled={permissionPending} onClick={voiceState === "listening" ? stopVoice : startVoice} aria-label={voiceState === "listening" ? t.stop : t.start}>
@@ -456,8 +553,9 @@ export default function ClinicalSafetyDashboard({ locale, environment, lowStockC
           </button>
           <span className="safety-call-label">{permissionPending ? (locale === "es" ? "Solicitando permiso…" : "Requesting permission…") : voiceState === "listening" ? t.stop : t.start}</span>
         </div>
+        <div className="safety-voice-examples"><span>{locale === "es" ? "Prueba una consulta" : "Try asking"}</span><div>{(locale === "es" ? ["¿Qué médicos están disponibles?", "¿Qué hay bajo mínimo?", "Abrir agenda"] : ["Which clinicians are available?", "What is below minimum?", "Open schedule"]).map((example) => <button type="button" key={example} onClick={() => respondTo(example)}>{example}</button>)}</div></div>
         <form className="safety-voice-text-form" onSubmit={(event) => { event.preventDefault(); respondTo(draft); setDraft(""); }}><input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder={locale === "es" ? "Escribe un reporte o consulta" : "Type a report or question"} aria-label={locale === "es" ? "Reporte o consulta" : "Report or question"} /><button type="submit" disabled={!draft.trim()}>{locale === "es" ? "Enviar" : "Send"}</button></form>
-        <div className="safety-voice-footer"><ShieldCheck size={14} /><span>{locale === "es" ? "La voz se procesa en el navegador; la transcripción puede usar servicios del navegador. No se almacena en esta demo." : "Audio is captured in the browser; transcription may use browser services. This demo does not store it."}</span></div>
+        <div className="safety-voice-footer"><ShieldCheck size={14} /><span>{locale === "es" ? "La voz se procesa en el navegador; la transcripción puede usar servicios del navegador. No se almacena en esta demo." : "Audio is captured in the browser; transcription may use browser services. This demo does not store it."}<a className="azteclab-inline-link" href="https://www.azteclab.co/" target="_blank" rel="noreferrer">{locale === "es" ? "Conocer AztecLab" : "About AztecLab"}<ArrowRight size={12} /></a></span></div>
       </section>
     </div>
 

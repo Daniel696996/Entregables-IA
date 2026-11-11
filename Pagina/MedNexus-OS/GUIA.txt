@@ -3,9 +3,9 @@ MEDNEXUS OS - GUIA RAPIDA
 
 QUE ES
 ------
-Demo web bilingue para operaciones hospitalarias. Incluye panel de seguridad,
-perfil de supervision, portal del paciente, agenda, inventario, equipo medico,
-red hospitalaria en Google Maps, estudios sintéticos y modelos 3D educativos.
+Demo bilingue de operaciones hospitalarias con panel de seguridad, red de
+hospitales, asistente de voz, equipo medico, inventario, agenda, consulta
+asistida y expedientes con estudios sinteticos.
 
 INICIAR
 -------
@@ -24,76 +24,75 @@ Para compilar y servir:
    npm run build
    npm start
 
-CAMBIAR IDIOMA Y ROL
---------------------
-Usa el boton ES / EN en la barra superior para cambiar el idioma.
-Usa Clinico / Paciente en la barra lateral para cambiar de espacio.
-Esto solo cambia la vista local; no es autenticacion ni control de acceso.
+CAMBIAR IDIOMA, ROL Y TEMA
+--------------------------
+Usa ES / EN para cambiar idioma y Clinico / Paciente para cambiar de espacio.
+El selector de rol es una vista de demostracion, no autenticacion.
+Usa Claro / Oscuro en la barra superior. La preferencia queda guardada en el
+navegador.
 
 FUNCIONES
 ---------
 Clinico:
-- Seguridad clinica: estado de HCE, monitoreo de pacientes y servidores de farmacia.
-- Topologia 3D: selecciona nodos, arrastra para rotar y acerca con rueda o gesto.
-- Asistente: solicita permiso de microfono al iniciarlo, muestra nivel de audio
-  y transcripcion Web Speech cuando el navegador lo admite. La transcripcion
-  puede usar servicios del navegador; el proyecto no guarda la grabacion.
-- Respuestas locales de demostracion para reportes de fallos o consultas; no
-  ofrece triage ni diagnosticos. En Medellin, indica la linea de emergencias 123.
-- Red hospitalaria: configura la clave de Google Maps en .env.local para buscar
-  hospitales cercanos, contactos publicados y estimaciones de ruta desde Medellin.
-- Recomendaciones defensivas de ejemplo para revisar con el equipo de TI.
-- Cronologia de auditoria: filtra por fecha, sistema y nivel; los detalles y cambios son ficticios y locales.
-- Pacientes: busca por nombre, codigo, ciudad o especialidad; filtra por estado.
-- Inventario: filtra por categoria, via/especificacion, texto y stock critico.
-- Equipo medico: filtra por especialidad, turno y disponibilidad; sus barras
-  HUD son valores ficticios, no metricas del personal.
-- Agenda: consulta citas, consultorios y quirofanos ficticios.
-- Abre un producto para rotar y acercar el modelo 3D.
+- Seguridad clinica y topologia 3D con diez nodos y metricas ficticias.
+- Asistente de voz/texto con comandos locales para navegar, consultar equipo
+  disponible e inventario. Web Speech API muestra transcripcion cuando el
+  navegador la admite y concede permiso de microfono.
+- Accesos de ejemplo: pregunta que medicos estan disponibles, que referencias
+  estan bajo minimo o solicita abrir la agenda.
+- El asistente responde con reglas y fixtures locales; no es IA generativa.
+- El enlace a AztecLab abre su pagina informativa; no hay API de voz de AztecLab
+  conectada en esta demostracion.
+- Consulta asistida por pasos: sintomas, zona, intensidad, antecedentes y
+  señales autodeclaradas. No diagnostica ni calcula urgencia clinica.
+- Hospitales de Medellin con buscador, selector, contactos y enlaces a Maps.
+  Con clave de Google se consultan lugares y tiempos de ruta; sin clave se ve
+  un directorio local y distancia aproximada en linea recta.
+- Agenda con citas ficticias pasadas/futuras. Crea, edita y elimina citas,
+  guardias, cirugias o reuniones; los eventos se guardan en localStorage.
+- Equipo con perfiles ilustrativos, incluyendo Jose Daniel Pabon Villanueva y
+  Valentina Rios. Camilo Jaramillo y Yuliana Perez tienen fichas con permisos
+  y actividad simulados.
+- Inventario con filtros y modelos 3D educativos.
 
 Paciente:
-- Consulta resumen de salud y proxima cita simulada.
-- Busca especialidad, profesional, fecha y modalidad para reservar.
-- La reserva solo muestra una confirmacion local.
-- Consulta el historial ficticio, amplía una radiografia sintética y abre modelos
-  3D de hueso/fractura, osteoporosis, neumonía, célula o equipo biomédico.
-- Abre Ayuda segura para leer el mensaje de emergencia y probar la llamada demo.
+- Consulta resumen, reserva ficticia y directorio hospitalario.
+- Abre consulta asistida desde la navegacion.
+- Las fichas incluyen notas, signos vitales, alergias, tratamientos ficticios,
+  auditoria y tres estudios de imagen sinteticos por paciente.
+- Ayuda segura muestra orientacion general y simulacion visual de llamada.
 
-VISOR 3D
---------
-Arrastra el objeto con el mouse o el dedo para rotarlo. Usa la rueda o el gesto
-de acercamiento para hacer zoom. Los modelos se generan en el navegador usando
-Three.js y React Three Fiber. Las imágenes y modelos son sintéticos y no sirven
-para diagnóstico ni sustituyen estudios clínicos.
+GOOGLE MAPS
+-----------
+Copia .env.example a .env.local y define NEXT_PUBLIC_GOOGLE_MAPS_API_KEY.
+Habilita Maps JavaScript API, Places API (New) y Routes API, y restringe la
+clave al origen web. Reinicia Next.js despues del cambio. Google puede cobrar
+las solicitudes de Places y Routes.
 
-La escena del hueso y la zona resaltada son ilustrativas y no diagnostican.
+El mapa pide ubicacion solo si el usuario lo permite. Sin clave se mantienen
+la busqueda local, los telefonos publicados y enlaces a rutas externas.
 
 DATOS Y SEGURIDAD
 -----------------
-Todos los nombres, codigos, antecedentes, alergias, profesionales, existencias,
-citas, firmas y estados son ficticios. Los ejemplos usan contexto de Medellin
-y Antioquia, Colombia. No introduzcas datos reales.
+Los pacientes, antecedentes, signos vitales, profesionales, certificaciones,
+contadores, existencias, turnos y citas son ficticios o ilustrativos. Las
+credenciales de los perfiles no estan verificadas. Los telefonos y direcciones
+del directorio tienen enlaces a las paginas oficiales para su confirmacion.
 
-La app no diagnostica ni recomienda tratamientos o dosis. Ante una urgencia,
-acude al centro hospitalario mas cercano. En una emergencia real, contacta los
-servicios locales y solicita una ambulancia desde un dispositivo real.
-
-La simulacion de llamada solo abre una animacion local. El asistente de voz sí
-captura audio si la persona concede permiso; la app no lo almacena. El navegador
-puede enviar la transcripcion a su servicio de reconocimiento.
-
-La demo no se conecta a una EPS, IPS, hospital, base de datos o servicio de
-emergencias. No genera prescripciones ni reserva espacios reales.
+Los modelos y estudios son sintéticos y no diagnostican. La aplicacion no
+prescribe, no genera citas reales, no llama a emergencias, no almacena audio ni
+se conecta a hospitales. El numero +57 000 000 0000 es invalido y solo aparece
+en la simulacion. En Medellin se muestra 123 como linea de emergencia.
 
 ARCHIVOS PRINCIPALES
 --------------------
 src/app/                  Rutas, layout y estilos
-src/components/           Interfaz y visor 3D
-src/data/mock-data.ts     Datos colombianos ficticios
-src/lib/                  Adaptador tipado de repositorio
+src/components/           Interfaz, mapa, triage y visor 3D
+src/data/mock-data.ts     Fixtures locales de demostracion
+src/lib/                  Adaptador tipado del repositorio
 src/types/                Tipos de dominio
 README.md                 Inicio rapido y resumen
-GUIA.md                   Guia detallada de navegacion y arquitectura
+GUIA.md                   Guia detallada y arquitectura
 
-Antes de uso real hacen falta autenticacion, autorizacion, auditoria, backend,
-proteccion de datos, interoperabilidad y validacion de la institucion.
+Antes de uso real hacen falta autenticacion, autorizacion, auditoria,
+validacion clinica, backend, proteccion de datos e interoperabilidad.

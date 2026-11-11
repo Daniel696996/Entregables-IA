@@ -24,7 +24,7 @@ El comando npm run typecheck ejecuta el verificador de tipos TypeScript.
 
 ### Selector de rol
 
-La barra lateral permite entrar al espacio **Clínico** o al portal de **Paciente**. Cada rol tiene su propio grupo de navegación. El selector cambia la vista local; no representa un inicio de sesión ni controla permisos de seguridad.
+La barra lateral permite entrar al espacio **Clínico** o al portal de **Paciente**. Cada rol tiene su propio grupo de navegación. El selector cambia la vista local; no representa un inicio de sesión ni controla permisos de seguridad. El botón **Claro / Oscuro** cambia el tema y conserva la selección en `localStorage`.
 
 El botón ES / EN cambia las etiquetas y mensajes entre español e inglés. La información de ejemplo conserva nombres y geografía colombianos en ambos idiomas.
 
@@ -36,18 +36,25 @@ El botón ES / EN cambia las etiquetas y mensajes entre español e inglés. La i
 - Permite cambiar la etiqueta del entorno hospitalario de demostración; el selector no cambia una conexión ni los datos.
 - La topología 3D permite seleccionar nodos, rotar y acercar la escena.
 - El asistente pide acceso al micrófono solo al pulsar **Activar micrófono**. Muestra un medidor de volumen y transcripción si el navegador tiene Web Speech; si no, permite escribir el reporte. La transcripción puede usar un servicio externo del navegador. No se graba ni almacena audio desde esta app.
-- Las respuestas son locales y predefinidas: ayudan a estructurar un reporte técnico, pero no contactan al equipo de TI ni prestan triage o diagnóstico. Si se menciona una emergencia, el panel dirige a atención local; en Medellín muestra la línea 123.
+- Las respuestas son locales y basadas en reglas: pueden abrir apartados y resumir disponibilidad del equipo o stock. Los ejemplos rápidos muestran frases de prueba. No contactan al equipo de TI ni prestan diagnóstico o triage clínico. Si se menciona una emergencia, el panel dirige a servicios locales; en Medellín muestra la línea 123.
+- El micrófono usa Web Speech API del navegador cuando está disponible y requiere permiso. Puede haber transcripción parcial en vivo; al detener se procesa una respuesta local. El enlace a [AztecLab](https://www.azteclab.co/) es informativo: el sitio no publica una API de voz para esta app y no se realiza una integración técnica ni llamada a esa empresa.
 - Las recomendaciones y sus etiquetas HIPAA o de política interna son referencias ficticias; no verifican cumplimiento normativo.
 - La cronología filtra eventos sintéticos por fecha, sistema y nivel. Al expandir una fila se muestra actor, origen y detalle; marcar como revisado solo modifica el estado local de la demostración.
 
 La agenda, los pacientes y el inventario siguen disponibles en la navegación lateral como módulos separados.
 
+**Consulta asistida**
+
+- El cuestionario organiza síntomas, zona, intensidad percibida, antecedentes y señales de alarma autodeclaradas.
+- Si se elige una señal de alarma, muestra una instrucción general para buscar ayuda local. Si se elige «No estoy seguro», recomienda hablar con un profesional. Ningún resultado es diagnóstico o cálculo clínico de urgencia.
+- El resumen se puede llevar al asistente de voz local para revisión informativa.
+
 **Pacientes**
 
 - Busca por nombre, código ficticio, ciudad o especialidad.
 - Filtra por estado: en espera, listo o en consulta.
-- Abre una ficha para revisar edad, ciudad, grupo sanguíneo, alergias y antecedentes ficticios.
-- Cada ficha incluye una ilustración radiográfica sintética con zoom y un selector de modelos educativos 3D (fractura, osteoporosis, neumonía, célula o equipo biomédico).
+- Abre una ficha para revisar edad, ciudad, grupo sanguíneo, alergias, antecedentes y tratamientos ilustrativos.
+- Cada expediente contiene notas de evolución, tres muestras de signos vitales, tres estudios sintéticos con modelos 3D y una bitácora de auditoría local.
 - Las fichas no tienen controles para editar diagnósticos o historia.
 
 **Inventario**
@@ -61,18 +68,20 @@ La agenda, los pacientes y el inventario siguen disponibles en la navegación la
 **Equipo médico**
 
 - Filtra el directorio ficticio por especialidad, turno y estado.
-- Las tarjetas tienen marcos de avatar y barras HUD de actividad/disponibilidad con etiquetas P1, especialista activo y estados del turno. Son indicadores visuales de datos ficticios, no métricas reales del personal.
+- Las tarjetas tienen marcos de avatar y barras de actividad/disponibilidad con indicadores ficticios, no métricas reales. Incluyen a José Daniel Pabón Villanueva y Valentina Ríos; los años, contadores, áreas de interés y textos de formación son datos de demostración y no acreditan trayectoria ni certificaciones.
+- Las fichas de Camilo Jaramillo y Yuliana Pérez muestran roles, permisos locales y métricas simuladas.
 - La ficha puede abrir una reserva con especialidad y profesional preseleccionados.
 
 **Agenda**
 
-- Muestra citas simuladas con hora, profesional, consultorio y motivo.
-- El calendario es una vista de maqueta.
+- Muestra citas y turnos ficticios de días pasados y futuros.
+- **Nuevo evento** permite programar, editar y borrar citas, guardias, cirugías y reuniones. Los cambios se guardan en `localStorage` del navegador y no se envían a ningún hospital.
 - La tabla de recursos incluye consultorios y programación de quirófanos ficticios.
 
 **Red hospitalaria**
 
 - Integra Maps JavaScript API, Places API (New) y Routes API al configurar `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`. Usa Medellín como centro inicial y pide ubicación bajo acción del usuario, excepto si el navegador ya la había autorizado.
+- Sin clave, conserva un directorio local buscable de hospitales de Medellín con teléfono de contacto, página oficial, enlaces a rutas de Google Maps y distancias aproximadas en línea recta. No estima minutos de conducción sin la API de Routes.
 - Para activar Maps, copia `.env.example` a `.env.local`, añade una clave restringida por origen web y habilita las APIs correspondientes en Google Cloud. Las solicitudes y la facturación dependen de la cuenta de Maps.
 
 ### Portal del paciente
@@ -92,6 +101,10 @@ La agenda, los pacientes y el inventario siguen disponibles en la navegación la
 5. Elige un horario y confirma.
 
 La confirmación solo muestra un mensaje local. No se crea una cita en un calendario ni en un sistema hospitalario.
+
+**Consulta asistida**
+
+El mismo cuestionario está disponible para ordenar información autodeclarada. Al preparar el resumen, este pasa a la pantalla local del asistente clínico; el selector de rol es solo visual en la demo y no representa una autorización real.
 
 **Mi historia**
 
@@ -122,7 +135,7 @@ No se cargan modelos ni imágenes médicas de pacientes. El render del hueso es 
 
 ## 4. Datos y filtros
 
-Los fixtures viven en src/data/mock-data.ts. Incluyen 11 perfiles ficticios, profesionales de Medellín y Antioquia, citas, departamentos, horarios, una EPS de demostración, antecedentes, alergias y un catálogo con 12 referencias.
+Los fixtures viven en src/data/mock-data.ts. Incluyen pacientes y profesionales ficticios, colaboradores de proyecto, citas y eventos históricos, centros hospitalarios con enlaces de contacto oficial, departamentos, horarios, una EPS de demostración, antecedentes, alergias y un catálogo con 12 referencias.
 
 La lógica de acceso a datos está en src/lib/clinical-repository.ts. Esa capa tipada entrega colecciones a la UI y se puede reemplazar por un cliente de API en otra fase.
 
@@ -140,7 +153,7 @@ Los filtros del equipo se combinan por especialidad, turno y disponibilidad. Los
 
     src/app/layout.tsx                 Metadata, HTML base y CSS global
     src/app/page.tsx                   Ruta principal
-    src/app/globals.css                Tema claro y responsivo
+    src/app/globals.css                Temas claro/oscuro y estilos responsivos
     src/components/MedNexusApp.tsx     Navegación, pantallas, filtros y modales
     src/components/ClinicalSafetyDashboard.tsx  Panel de seguridad y simulaciones
     src/components/NetworkTopology.tsx Escena de topología interactiva Three.js / R3F
@@ -149,13 +162,13 @@ Los filtros del equipo se combinan por especialidad, turno y disponibilidad. Los
     src/lib/clinical-repository.ts     Adaptador de datos para la interfaz
     src/types/clinical.ts              Tipos del dominio
 
-La ruta es una interfaz cliente de Next.js. Los datos se importan localmente; no hay endpoints, base de datos, autenticación ni almacenamiento persistente. Los controles de reserva y solicitud solo actualizan el estado visual.
+La ruta es una interfaz cliente de Next.js. Los datos se importan localmente; no hay endpoints, base de datos ni autenticación. La preferencia de tema y los eventos que el usuario añade a la agenda se guardan en `localStorage`; el resto de acciones de demostración solo actualiza estado de interfaz.
 
 ## 6. Límites y siguiente fase
 
 No introduzcas información personal, diagnósticos reales, imágenes, prescripciones o identificadores reales. No uses la demo para decisiones clínicas ni para coordinar atención real.
 
-MedNexus OS no diagnostica, no recomienda tratamientos ni dosis, no hace triage, no estima el riesgo de un paciente, no reemplaza al personal de salud y no llama a emergencias. En una urgencia, acude al hospital más cercano o contacta los servicios locales por un canal real.
+MedNexus OS no diagnostica, no recomienda tratamientos ni dosis, no realiza triage clínico, no estima riesgo, no reemplaza al personal de salud y no llama a emergencias. El cuestionario solo ordena respuestas y muestra orientación general ante señales autodeclaradas. En una urgencia, acude al hospital más cercano o contacta los servicios locales por un canal real.
 
 Antes de conectar pacientes o procesos reales, define con la institución el modelo de acceso por rol, autenticación multifactor, autorización por paciente y relación asistencial, auditoría, cifrado, retención, consentimiento, gestión de incidentes, validación clínica, interoperabilidad y obligaciones aplicables en Colombia. Mantén el expediente firmado en un backend con control de versiones y trazabilidad; bloquea en servidor las mutaciones que no tengan autorización clínica.
 

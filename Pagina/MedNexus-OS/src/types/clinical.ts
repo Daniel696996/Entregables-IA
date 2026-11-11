@@ -59,6 +59,7 @@ export interface PatientClinicalDetail {
   notes: Array<{ date: string; type: string; author: string; summary: string }>;
   vitals: Array<{ date: string; bloodPressure: string; heartRate: string; temperature: string; oxygenSaturation: string }>;
   studies: Array<{ date: string; title: string; bodyArea: string; model: InventoryModel; summary: string }>;
+  activeTreatments: string[];
   activePlan: string[];
   audit: Array<{ date: string; action: string; actor: string; result: string }>;
 }
@@ -66,6 +67,7 @@ export interface PatientClinicalDetail {
 export interface ProjectCollaborator {
   name: string;
   initials: string;
+  portrait?: string;
   title: string;
   department: string;
   role: string;
@@ -92,4 +94,5 @@ export interface HospitalFacility {
   phone: string;
   mapsQuery: string;
   officialUrl: string;
+  coordinates: { lat: number; lng: number };
 }

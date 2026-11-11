@@ -1,9 +1,10 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Line, OrbitControls } from "@react-three/drei";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import type { ThreeEvent } from "@react-three/fiber";
+import type { Mesh, MeshBasicMaterial } from "three";
 
 export type NetworkNodeId = "ehr" | "monitoring" | "pharmacy" | "network" | "backup" | "icu" | "telemedicine" | "payments" | "perimeter" | "database";
 
@@ -34,21 +35,36 @@ const connections: Array<[NetworkNodeId, NetworkNodeId]> = [
   ["telemedicine", "monitoring"], ["perimeter", "ehr"],
 ];
 
-function NetworkNode({ node, selected, onSelect }: {
+function NetworkNode({ node, selected, onSelect, reducedMotion }: {
   node: NodeDefinition;
   selected: boolean;
   onSelect: (id: NetworkNodeId) => void;
+  reducedMotion: boolean;
 }) {
+  const pulseRef = useRef<Mesh>(null);
+  const pulseMaterialRef = useRef<MeshBasicMaterial>(null);
+  useFrame(({ clock }) => {
+    if (!pulseRef.current || !pulseMaterialRef.current) return;
+    if (reducedMotion) {
+      pulseRef.current.scale.setScalar(selected ? 1.34 : 1.22);
+      pulseMaterialRef.current.opacity = selected ? 0.11 : 0.035;
+      return;
+    }
+    const wave = (Math.sin(clock.elapsedTime * 1.7 + node.position[0] * 2) + 1) / 2;
+    const scale = (selected ? 1.34 : 1.22) + wave * 0.18;
+    pulseRef.current.scale.setScalar(scale);
+    pulseMaterialRef.current.opacity = selected ? 0.11 + wave * 0.11 : 0.035 + wave * 0.055;
+  });
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
     event.stopPropagation();
     onSelect(node.id);
   };
 
   return <group position={node.position} onClick={handleClick}>
-    {selected && <mesh scale={1.55}>
+    <mesh ref={pulseRef}>
       <sphereGeometry args={[0.28, 24, 24]} />
-      <meshBasicMaterial color={node.color} transparent opacity={0.12} />
-    </mesh>}
+      <meshBasicMaterial ref={pulseMaterialRef} color={node.color} transparent opacity={0.07} depthWrite={false} />
+    </mesh>
     <mesh>
       <sphereGeometry args={[selected ? 0.24 : 0.19, 28, 28]} />
       <meshStandardMaterial color={node.color} emissive={node.color} emissiveIntensity={selected ? 0.35 : 0.14} roughness={0.3} metalness={0.08} />
@@ -60,10 +76,37 @@ function NetworkNode({ node, selected, onSelect }: {
   </group>;
 }
 
+function DataPacket({ from, to, phase, reducedMotion }: { from: NodeDefinition; to: NodeDefinition; phase: number; reducedMotion: boolean }) {
+  const packetRef = useRef<Mesh>(null);
+  useFrame(({ clock }) => {
+    const progress = reducedMotion ? phase : (clock.elapsedTime * 0.12 + phase) % 1;
+    if (!packetRef.current) return;
+    packetRef.current.position.set(
+      from.position[0] + (to.position[0] - from.position[0]) * progress,
+      from.position[1] + (to.position[1] - from.position[1]) * progress,
+      from.position[2] + (to.position[2] - from.position[2]) * progress,
+    );
+  });
+  const caution = from.state === "review" || to.state === "review";
+  return <mesh ref={packetRef}>
+    <sphereGeometry args={[0.032, 10, 10]} />
+    <meshBasicMaterial color={caution ? "#f0b45b" : "#7ce0d4"} toneMapped={false} />
+  </mesh>;
+}
+
 export default function NetworkTopology({ selectedNode, onSelect }: {
   selectedNode: NetworkNodeId;
   onSelect: (id: NetworkNodeId) => void;
 }) {
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
   return <Canvas camera={{ position: [0, 0.15, 6.3], fov: 44 }} dpr={[1, 1.5]} gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}>
     <Suspense fallback={null}>
       <ambientLight intensity={1.5} />
@@ -74,10 +117,14 @@ export default function NetworkTopology({ selectedNode, onSelect }: {
         const toNode = nodes.find((node) => node.id === to);
         if (!fromNode || !toNode) return null;
         const review = fromNode.state === "review" || toNode.state === "review";
-        return <Line key={`${from}-${to}`} points={[fromNode.position, toNode.position]} color={review ? "#fbbf24" : "#7dd3c7"} lineWidth={1.35} transparent opacity={0.68} dashed dashSize={0.08} gapSize={0.05} />;
+        return <group key={`${from}-${to}`}>
+          <Line points={[fromNode.position, toNode.position]} color={review ? "#d8aa5b" : "#5ab9b7"} lineWidth={1.1} transparent opacity={0.34} />
+          <DataPacket from={fromNode} to={toNode} phase={0} reducedMotion={reducedMotion} />
+          <DataPacket from={fromNode} to={toNode} phase={0.52} reducedMotion={reducedMotion} />
+        </group>;
       })}
-      {nodes.map((node) => <NetworkNode key={node.id} node={node} selected={node.id === selectedNode} onSelect={onSelect} />)}
-      <OrbitControls makeDefault enablePan={false} minDistance={4.2} maxDistance={9} enableDamping dampingFactor={0.08} />
+      {nodes.map((node) => <NetworkNode key={node.id} node={node} selected={node.id === selectedNode} onSelect={onSelect} reducedMotion={reducedMotion} />)}
+      <OrbitControls makeDefault enablePan={false} minDistance={4.2} maxDistance={9} enableDamping dampingFactor={0.08} autoRotate={!reducedMotion} autoRotateSpeed={0.18} />
     </Suspense>
   </Canvas>;
 }
